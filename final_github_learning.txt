@@ -1,0 +1,421 @@
+1].Basic definations:
+Version Control System: A version control system is system which is allow developer to track and manage their changes in file over time.It allows multiple developers to collaborate on a project, keep history of modifications, and revert to previous versions when needed.
+Git: Git is one type of version control system which is installed into your local machine and manage and track your code.
+GitHub: GitHub is online platform which is allows you to store and manage your code remotely.We can manage our code locally using git and sotre and manage remotely using GitHub.We can also access github code using git on our local machine.
+
+2].Technical definations:
+Organization: A github account is knonwn as organization in technical terms(one ororganization can have multiple repos)
+Repository: We store our project in fom of folder in github which is knonwn as repository(Repo).
+README.md: We can create one README.md(markdown file which is optional, markdown file work like html file and we writing it with html tags) for our each project in github which is give a brife description about that project.
+commit: A commit is like snapshot of your code which is act like a one savepoint of your repository's development journey.
+    Each commit includes:
+        - changes in your code
+        - commit message(first line of commit message is title of commit and other lines are description of that commit message(which is optional))
+        - unique Id(called hash)
+        - author Info(who made the change and when, generally usefull when multiple person's work on same project)
+
+3].Github configuration
+-account 1(prime)
+email: rajpavara15@gmail.com
+username: Rdeveloper15
+password: 90op()OP15
+-account 2
+email: rajpavara05@gmail.com
+username: Rdeveloper05
+password: 90op()OP15
+
+4].git configuration commands
+==you can connect your local machine with one github account==
+git config --global user.name "Rdeveloper15"
+git config --global user.email "rajpavara15@gmail.com"
+git config --list   [for check name and email set properly or not]
+==disconnect your local machine with github account==
+git config --global --unset user.name
+git config --global --unset user.email
+git --version   [for check git version in your system]
+
+5].clone
+git clone <https link of target repo>    [clone remote repo on your local machine, here you can clone any github account's repo(of your account's and another account's repo also which is public), repo is cloned at where your terminal's cursor is pointing]
+=> clone someone's repo make changes try to push it error 403, denied permission.
+=> target repo's owner add collaborate as you in target repo's settings.now accept his invination by your account. then clone that repo make changes and now you can push it.
+=> another way to contribute in other's repo is fork that repo clone it make changes push it then make PR with origin account's repo.
+
+6].status
+take terminal inside the cloned repo
+git status  [show status of each file of that repo]
+    - untracked file which is newly added.
+    - modified file which is already exists but modified.
+    - staged file which is staged(using git add command).
+    - unmodified file which is not modified.
+Get-ChildItem -Force    [displays all hidden files and folders in the current directory. If a .git folder is listed among them, it means that the directory is a Git repository.]
+
+7].commit changes
+=commit changes on github is 2 step process=
+i).make changes staged
+git add <filename>    [staged particular file, <foldername>/<filename> for staged file of particular folder]
+git add ./-A/--all    [for staged all files of current repo]
+git add -p     [ lets you interactively choose which changes you want to stage]
+    = here for each file there is an interactive editor is opened.
+    = for each file there is multiple hunks(a section of changes that Git groups together)
+    = for each hunks there is multiple opetions [y,n,q,a,d,j,J,g,/,e,p,?], by choosing these opetions you can decide that which part of file you went to add.
+ii).make changes commit    [commit work one only those changes which are staged]
+git commit    [open editor, now write commit message, save it, commit is done]
+git commit -m "commit message"    [normal commit]
+git commit --amend    [here changes are reflected on last commit, last commit's time and author is could not changed with respect to who make changes and when, but in amend commit hash is changed]
+git commit --amend --no-edit    [amend changes without changing commit message, in normal amend you can have option to make changes in commit message]
+=upper command commit only those changes which are staged=
+git commit -a    [open nano editor, write commit message, save it,][commit and stage all modified(not untracked) file at a same time]
+
+8].editor
+=sometimes we need to make changes in between execution of particular git command, like editing commit message during 'git commit --amend'=
+=so we can make changes in between execution using 2 types of editor, you can either use nano editor(which is run on command line)(by default editor) or use vs code as editor=
+git config --global core.editor "code --wait"    [set vs code as editor for making changes, for vs code after making changes for save these just close that tab]
+git config --global core.editor "nano"    [set nano edit for making changes, for nano editor after making changes for save these changes ctrl+O, Enter, ctrl+X]
+
+9].remote and local repository(assume that here we have only one branch main in local as well as in remote)
+=Each Git repository on your local machine can be connected to one or more remote repositories on GitHub.=
+=When you clone a repository from GitHub to your local machine, Git automatically connects your local repository to the original GitHub repository it was cloned from. By default, this remote is named origin.=
+
+9.1].local repo which have only one remote repo
+=For local repo there is 2 operations one is get data (changes) from remote to local and second is sent data from local to remote=
+=By default when you clone repo from local then for sending and getting data you have only one repository and that was origin (from which it cloned)=
+=Here for one remote (by default called origin) you can set differant remote repo for pull and push=
+=for sending data   git remote set-url --push origin <https url of sending repo>=(note that if you went to push changes on here mentioned url then first join as collaborator for this repo)
+=for getting data   git remote set-url origin <https url of getting repo>=
+=you can see from which link you send and recieve data using git remote -v which give output like this
+origin  https://github.com/Rdeveloper15/Demo-Repo-15.git (fetch)
+origin  https://github.com/Rdeveloper05/Demo-Repo-05.git (push)=
+= when you push data on origin (for example, push in main branch 'git push origin main') then it push to Rdeveloper05's Demo-Repo-05 repo AND when you pull/fetch data from origin (for example, pull from main branch 'git pull origin main') then it pull/fetch from Rdeveloper15's Demo-Repo-15 repo=
+
+9.1.1].data pulling(let's pull data from remote by 'git pull origin main' command, assume that there is only one branch main and only one remote origin)
+= note that when you clone any repo into your local then local and remote both repo have same commit tree(sequence of commit representing the commit history)
+= 'git pull origin main' leads to differant behaviors according to scenarios with respect to your local and remote repo.
+= scenario 1: If new commits are added on the remote but no commits are made locally: simply merge the remote commits into your local repo. Your local repo becomes identical to the remote.
+= scenario 2: If new commits are added on the local repo but no commits are made on remote: not change anything because local repo already has all remote's commit.
+= scenario 3: If new commits on both local and remote(diverged repos): here local and remote both have differant commit tree.
+    concept of hunk: here there is one concept called hunk in github(this is not right defination of hunk but for better understanding now you can assume this defination of hunk)
+                     here whenever you commit some changes then one hunk is created for each changes.
+                     this hunk is contains (one extra line + actual changes + one extra line)
+                     here in any commit when commit is done then there is 3 types of changes you can do in your code 1.add new line, 2.remove existing line, 3.change existing line
+                     so for these changes hunk is created like this. 1.add new line X(hunk = (line X-1)+(line X)+(line X+1)), 2.remove line X(hunk = (line X-1)+(line X+1)), 3.change line X(hunk = (line X-1)+(line X)+(line X+1)).
+                     one commit contains one or more hunk.note that if changes are done adjusantlly then one hunk is merging of sub hunks(like change line X and X+1 then hunk is line X to X+2)
+                     in case of changes are made on last/first line then extra line is not added in hunk.
+    now when you run 'git pull origin main' command for diverged repos then here there are chances to occuer merge conflicts.
+    here pull process git applies commits one by one, starting from the common ancestor and continuing applying from local as well as remote(like if from commit 3. tree is diverged from local and remote then first commit 4 add (from local) then commit 5 add (from remote) then commit 6 add (from local)  and so on...).
+    merge conflicts not occuer: when DIFFERANT DIFFERANT REPO'S(remote repo/local repo) COMMIT'S HUNK are not overlap.(if hunk from local commit and hunk from remote commit is not overlap then merge conflicts are not occuer, and vice versa)(note that for example, if one hunk of one commit from local end at line X, and one hunk of one commit from remote start at line X. then there is no overlap(because changes for first commit are end at line X-1 and changes for second commit are start from line X+1 so no conflicts))(conflicts are occuer only when changes are made on adjustant line)
+                                in this case where merge conflicts are not occuer pulling process are open editor in this editor write merge commit's message and close the editor, so here new merge commit is added
+                                merge commit is special type of commit, normal commit has one parent but merge commit has 2 parent(one is local's last commit and second is remote's last commit).merge commit combine all local commit(which are not presant on remote) with incoming remote commits.
+                                how commit tree look like afte applying merge commit.
+                                1-2-3-4-5-merge commit        (3,4,5 = local commit)(6,7,8 = remote commit)(merge commit's parent = 5 & 8)
+                                  \      /
+                                   6-7-8
+                                merge commit contains: date and time of merging, author(which is pulled), commit message, unique hash, and line (Merge: fff5a57 30d67df {last commit's hash on local as well as remote})
+                                here in this scenario when you do git log then here commit are displaed in asending order in time(like here first we do commit 3,then 4, then 6, then 5 and so on. so git log display commits 3,4,6,5...,merge commit)
+                                note that if you remove merge commit by git reset HEAD~1 then you lose all your remote commit pulled from remote because merge commit is connect remote commit with local.
+    merge conflicts are occuer: when DIFFERANT DIFFERANT REPO'S(remote/local repo) COMMIT'S HUNK are overlap.(merge conflicts are occuer in case of hunk's changes are overlap not extra space. for example, one hunk end at X and second start from X then no conflicts because first hunk's changes end at X-1 and second hunk's changes start from X+1.BUT IF HUNK'S CHANGES ARE OVERLAP WITH OTHER HUNK THEN CONFLICTS ARE OCCUER like one hunk end at X and second start from X-1. so here changes of second hunk is start from X and at line X one hunk is presant(no matter that hunk's changes are presant or extra line was presant at line X) so merge conflicts are occuer)
+                                in case of merge conflicts you can see overlaping hunks like this
+                                <<<<<<< HEAD
+                                conflicting hunk from local(current changes)
+                                =======
+                                conflicting hunk from remote(incoming changes)
+                                >>>>>>> 7211da0ced9fdffc4b004653d29eda811fdcf7b9
+                                last mentioned commit hash is hash of remote repo from which this hunk is belongs to.
+                                now set which change you required and then make one commit.(merge commit)
+                                by default after occuering of merge conflicts a first commit is treated as merge commit and that merge commit also has 2 parent and removing of that merge commit is remove all commits comming from remote.
+
+9.1.2].pull with rebase(let's pull data from remote by 'git pull --rebase origin main' command, assume that there is only one branch main and only one remote origin)
+= like data pulling with 'git pull origin main' pull with rebase is also show differant differant behaviors according to scenarios of remote and local repo
+= scenario 1: If new commits are added on the remote but no commits are made locally: simply merge the remote commits into your local repo. Your local repo becomes identical to the remote.
+= scenario 2: If new commits are added on the local repo but no commits are made on remote: not change anything because local repo already has all remote's commit.
+= scenario 3: If new commits on both local and remote(diverged repos): here local and remote both have differant commit tree.
+    when you do 'git pull --rebase origin main' then first github take all your remote commits on your local and then top of this commits a new extra local's commit is applying (without taking care of time of the commit when it created).
+    local: 1->2->3->4, remote: 1->2->5->6. so upper command is do like this in local 1->2->5->6->3->4(similar display in git log).
+    merge conflicts not occuer: in pull with rebase when remote's commit's hunk is not overlap with local commit's hunk then merge conflicts are not occuer.
+                                pull with rebase is first of all make your local identical to remote and then on top of this commit tree new extra local's commits are applied.
+                                here removing any commit using 'git reset HEAD~1' is only remove top commit and not effect any remote or local commit.
+    merge conflicts are occuer: pull with rebase sometimes may lead to merge conflicts.
+                                here when we run 'git pull --rebase origin main' then first of all, all commits of remote are applied on local and then all extra local commits are applied one by one on top of the remote repo.
+                                here during applying of particular one commit suppose merge confilct are occuer(because that commit's hunk is overlap with any remote commit's hunk) at that time a rebase process is being stopped.
+                                like  local: 1->2->3->4, remote: 1->2->5->6. here first of all local repo is look like 1->2->5->6 then commit 3 is applied, here commit 3 and commit 6 are collaps and merge conflict is occuer.
+                                <<<<<<< HEAD
+                                remote's changes
+                                =======
+                                local's changes
+                                >>>>>>> hash of local commit (commit message of local commit)                             here local commit is conflicting commit.
+                                now you have 3 opetions
+                                git rebase --abort      => this command is completely abort the rebase process and you back to the position where you start the rebase and your local repo is being as itis before rebase.
+                                git rebase --skip       => this will skip the current local commit and continue the rebase process. local: 1->2->3->4, remote: 1->2->5->6 during rebase local:1->2->5->6 now apply 3 and 4 on local and let's 3 is conflicting with 6, so 'git rebase --skip' is skip the commit 3 (and it's all changes and conflict) and going further to apply commit 4(which has not conflict). final local 1->2->5->6->4. this command will leads to lose of local commit.
+                                git rebase --continue   => this will continue the rebase process. local: 1->2->3->4, remote: 1->2->5->6 during rebase local:1->2->5->6 now apply 3 and 4 on local and let's 3 is conflicting with 6, now make changes on your code as you went and do 'git add .' and 'git rebase --continue'.  this command will open nano editor(write commit message). here new commit is created for commit-3(updated local 1->2->5->6->new commit{which have changes you made on conflicts}) now rebase process is continue and apply commit 4. final local: 1->2->5->6->new_commit->4.
+pull with rebase mainly used for make your commit history linear and clear and merge your diverged repos without needing of extra merge commit.
+in branch there is also concept of rebase in branch if you rebase your branch A with B then top of B the extra commit of A applied and update the branch A.
+git config --global pull.rebase true    //This command is make your pull process, rebase by default, like after enbale pull.rebase in configuration 'git pull origin main' = 'git pull --rebase origin main'
+git config --global pull.rebase false   //This command is make your pull process as itis a normal pull.
+
+9.1.3].data fetching(let's fetch data from remote by 'git fetch origin main' command, assume that there is only one branch main and only one remote origin)
+concept of remote tarcking branch: we have differant differant remote for one local(discuss in future) and have differant differant branch for each remote(discuss in future) and have many branches in local.
+                                   like if we have 2 remote origin1, origin2 and one branch in each remote(main). main from origin1, main from origin2 and one main branch in local.
+                                   when remote tracking branch is created:
+                                                                          when you clone any repo into your local from remote then remote tracking branches are created automatically for each branch of remote.(e.g. clone Test repo from remote(Test repo's remote have 2 branch b1, b2) 2 remote tracking branch origin/b1, origin/b2 is created).
+                                                                          When you create a new branch in your local repo (e.g., b), and push it for the first time to any remote (origin), Git will: Create that branch in the remote (if it doesn't already exist), Create a remote tracking branch in your local repo with name origin/b.
+                                                                          when you create a new branch in remote(after clone) then remote tracking branch is not automatically created but it created by fetch/pull from particular branch(by 'git pull origin f1', 'git pull --rebase origin f1', 'git fetch origin f1, is create origin/f1 remote tracking branch)
+                                   note that when you add new remote in your local repo then it can't create remote tracking branch. for remote tracking branch you need to do fetch/pull from that new remote.
+                                   remote tracking branches are stored in local, automatically created by Git, read-only and totally independent(make changes or remove changes(remote commit) of local branch is couldn't affect remote tracking branch) from local branches.
+                                   remote tracking branch are track the state of branch in remote.
+                                   in upper 3 cases when remote tracking branch is created then it is identical to remote repo.
+                                   but here these branch is could not automatically updated when branch on remote is updated.
+                                   but, when we pull from github by 'git pull origin main' or 'git pull --rebase origin main' or 'git fetch origin main' then origin/main branch is updated and being identical to remote.
+- git pull origin main = [update the remote tracking branch origin/main(fetch) + merge updated origin/main branch with local]
+- git pull --rebase origin main = [update the remote tracking branch origin/main(fetch) + rebase updated origin/main branch with local]
+- fetch = process of download data(changes) from remote.
+'git fetch origin main' is update origin/main remote tracking branch and make it identical to origin remote's main branch.now you can merge or rebase it with your local branch.
+
+9.1.4].merging fetched data(let's merge fetched data by 'git merge origin/main' command, assume that there is only one branch main and only one remote origin)
+- after fetching data from remote by 'git fetch origin main' command now you can merge this data(updated remote tracking branch oringin/main) with your current local branch(main) by 'git merge origin/main' command.
+- here merge process of origin/main with current local main is similar to discussed in section 9.1.1
+- [git fetch origin main + git merge origin/main = git pull origin main]
+- note that without fetch if you merge oringin/main with local main then unupdated oringin/main will merge with local main.(don't recomanded)
+
+9.1.5].rebaseing fetched data(let's rebase fetchd data by 'git rebase oringin/main' command, assume that there is only one branch main and only one remote oringin)
+- after fetching data from remote by 'git fetch origin main' command now you can rebase your current local branch(main) with this fetched data(updated remote tracking branch oringin/main) by 'git rebase origin/main' command.
+- here rebase process of local main with oringin/main is similar to discussed in section 9.1.2
+- [git fetch origin main + git rebase origin/main = git pull --rebase origin main]
+- note that without fetch if you rebase local main with oringin/main then you local main is rebase with unupdated oringin/main.(don't recomanded)
+
+9.1.6].data pushing (let's push local's data on remote by 'git push oringin main' command, assume that there is only one branch main and only one remote origin)
+- After making changes(commits) on local 'git push origin main' is push local's main data on remote(oringin)'s main branch.(and make remote's main branch identical to local's main branch)
+- in some cases 'git push oringin main' is not push data and give error like this."error: failed to push some refs to <link of oringin's push url(shown in git remote -v)>
+    = This error describe that your current local branch is behind remote's branch.means you lack changes on local which are existed in remote.
+    = After cloning if you changes existing commit(existing in remote) (remove any commit or ammend in any commit) and try to push it leads to this error.
+    = Add new commit and push it not cause of this error.
+- 'git push oringin main --force' or 'git push oringin main -f' is force push process which is avoid this kind of error. force push is forcefully push your local repo to remote (If you make changes on existing commit then also). and make your remote identical to local.force push is simply replace your remote branch with local branch completely on remote and make it identical to local in any condition.
+- 'git push oringin main --force-with-lease' is safer force push command.force with lease is compare your remote tracking branch 'oringin/main' with remote's main branch if both is identical then this command is work as normal force push(git push origin main --force) otherwise it gives an error "error: failed to push some refs to <link of oringin's push url(shown in git remote -v)>
+    =   purpose of force with lease: generally if we went to change on existing code of remote then first of all we take pull from remote(which is make oringin/main identical to remote) and then we make changes(amend or remove any commit) and then do force push.
+    =   but here is one loop hole between the taking pull and push your local if your any collabrator is pushing anything on remote and then you do force push so commit making by collabrator is loose.
+    =   so force with lease is make sure that any collbrators is not push anything between your pull and push process.if any collbrator is push any changes on remote between your working process then your oringin/main is not identical to remote's main branch and now you can't push it.
+    =   force wiht lease is usefull when you working in collbrative enviornment. if you went to push by overriding collbrators commit then simply take fetch and make branch identical and then push force with lease working normally.
+
+9.2].local repo with multiple remote
+- By default when you clone any repo from remote to local then that local repo connect with one remote (called origin (by default))
+- You can connect your local repo with more than one remote.
+- 'git remote add <new_remote_name> <new_remote's url>' command used for add new remote to your local(you can add any remote, no matter from which organization)(you can't add multiple remote with same name).
+- you can see all your remote with its fetch and push url by 'git remote -v' command.
+- Main advantage of having multiple remote is you have multiple options to take push and pull for your local from remote.
+- 'git remote set-url <remote_name> <url for fetch>' command used for set fetch url for particular remote.
+- 'git remote set-url --push <remote_name> <url for push>' command used for set push url for particular remote.(here if you are not in collbrator list of push url then you are not able to push on that url)
+- 'git remote rename <old_remote_name> <new_name>' used to rename your any remote(you can't give common name to multiple remotes).
+- 'git remote remove <remote_name>' or 'git remote rm <remote_name>' used to remove remote.(if you remove all remote from your local then your local is not affected and it is still a git repo with all branches and commit tree. you can also able to make commit and switch between branches but not able to push or pull on any remote)
+- concept of hunk and remote tracking branch for multiple remote is as similar as for single remote(section 9.1).
+- pull and pull with rebase process for multiple remote is as similar as for single remote(section 9.1.1 and section 9.1.2).[But here there are 2 edge cases i.remote doesn't have main branch in that case local repo is not change at all. ii.remote's main branch is completely differant from local's main branch(from commit-1) then pull process is show expected normal logical behavior]
+- fetch, merge and rebase process for multiple remote is as similar as for single remote(section 9.1.3, 9.1.4 and 9.1.5)
+- push, force push and force with lease for multiple remote is also work similar like for single remote(section 9.1.6)(but before push on any remote you must add on that repo as collabrator(if in case you are not owner of that organization))(sometimes on remote main branch is not existed in that case new main branch is created on that remote and on that new main branch data was pushed)
+[extra info: 1.when you create new repo from github side and don't add README file then at initially there is no commit and branch for that new repo, 2.2 commits are equals means both hash are equeals(means both change and all things are equals)]
+- from now onwards all learning are based on assumtption that one local have multiple remote.
+
+10].branches
+= branch: 'A branches in github are differant differant copies of your repo'
+= branches are used to add featuer or fix on main codebase.
+= GitHub Workflow with Branches: Create a new branch from the any one existing branch, then add your fix or feature code to this new branch. Once your work is complete, merge this branch back into the original branch.
+= If you create repo on github without add README.md and any commit then repo is created without branch and commit. clone this repo on local then make changes and create one commit, here by default one branch(main) created and first commit add on this branch.
+= If you create repo on github with README.md then here by default main branch and commit(with 'Initial commit' message) created.
+= generally one branch is presant at 3 location. 1.in local(main) 2.in local as remote tracking branch(oringin/main) 3. in remote(at oringin remote's github's main branch)
+= you can't switch, rename or delete remote tracking branch
+= branch command:
+    1.'git branch' or 'git branch --list' list all local branches.
+    2.'git branch -r' list all remote tracking branches
+    3.'git branch -a' list all local and remote tracking branches
+    4.'git branch -v' list all local branch's with their name, last commit's hash and last commit's message.
+    5.'git branch <branch_name>' create new branch <branch_name> from current branch(but not switch on that branch)     [if you create new branch from current branch then at starting it is replica of current branch, and this new branch have all commit which it's parent branch have]
+    6.'git branch <new_branch> <branch_name>' <new_branch> craeted from <branch_name>
+    7.'git branch temp origin/f1' new branch temp is created from origin/f1 remote tracking branch
+    8.'git checkout -b <new_branch>' or 'git switch -c <new_branch>' new branch create from current branch and you checkouted to that new branch
+    9.'git checkout -b <new_branch> <branch_name>' or 'git switch -c <new_branch> <branch_name>' new branch created from branch_name not from current branch and switched to that new branch
+    10.'git checkout -b temp origin/f1' or 'git swithc -c temp origin/temp' new branch temp is created from origin/f1 remote tracking branch and switch on that new branch
+    11.'git checkout <branch_name>' or 'git switch <branch_name>' switch to another branch
+    12.'git checkout -' or 'git switch -' is used to switch to last branch
+    13.'git branch -m <new_name>' rename current branch
+    14.'git branch -m <branch_name> <new_name>' rename <branch_name> branch
+    15.'git merge <branch_name>' merge <branch_name> with current branch [this process is similar to discuss in section 9.1.4 (here according to section 9.1.4 your current branch act as local branch and <branch_name> act as remote tracking branch)]
+    16.'git merge <remote tracking branch>' you can merge any remote tracking branch with your current branch ( current branch:f1, 'git merge origin/f2' is merge origin/f2 with f1)
+    17.'git rebase <branch_name>' rebase your current branch_name wiht <branch_name> [this process is similar to discuss in section 9.1.5 (here according to section 9.1.5 your current branch act as local branch and <branch_name> act as remote tracking branch)]
+    18.'git rebase <remote tracking branch>' you can rebase your current branch with any remote tracking branch ( current branch:f1, 'git rebase origin/f2' is rebase f1 with oringin/f2)
+    19.'git branch -d <branch_name>' delete local branch [this is safer delete process which is check that deleting branch is merge or rebase with your "current" branch or not. if yes then delete that branch else not delete that branch] [here deleting branch is merged or not with current branch is check by. if the tip (latest commit) of the branch you're trying to delete is an ancestor of the current branch or not.]
+    20.'git branch -D <branch_name>' delete local branch [no matter if it merge or not] [you can't delete your current branch by command 19 or 20, for delete current branch switch on another branch and then delete this branch from there]
+    21.branches with remote
+        = when you are in branch xyz and then do 'git pull origin pyq' then origin/pyq branch is update in local and then this origin/pyq merge with xyz branch.(here pyq branch of local is unaffected)
+        = when you are in branch xyz and then do 'git pull --rebase origin pyq' then origin/pyq branch is update in local and then this origin/pyq used to rebase your xyz branch.(here pyq branch of local is unaffected)
+        = when you are in branch xyz and then do 'git merge origin/pyq' then origin/pyq is merge with xyz(here pyq branch of local is unaffected)
+        = when you are in branch xyz and then do 'git rebase origin/pyq' then local xyz is rebase by origin/pyq(here pyq branch of local is unaffected)
+    22.push on remote
+        = when you are in branch xyz and then do 'git push origin pyq' then your local branch "pyq" push on origin's pyq remote branch not xyz branch(same for force push and force with lease push)
+        = 'git push origin pyq' creates pyq branch on remote if it doesn't exist and pushes local pyq to it.
+    23.'git push <remote> --delete <branch_name>' or 'git push <remote> :<branch_name>' delete branch from remote
+= When you clone a repo, Git creates remote tracking branches for all branches on the remote, but only checks out the default branch (like main) locally. If you later run git checkout <branch_name>, and <branch_name> exists in the remote (as origin/<branch_name>), Git creates a new local branch from it. Otherwise, it shows an error.(After cloning, running git checkout dev creates a local dev branch from origin/dev if it exists — otherwise, it throws an error.)
+= In upper all rename or branch create command is couldn't support duplicasy(there is not possible to having 2 branch with same name)
+= If you rename a local branch and then push it to the remote: Git treats the renamed branch as a new branch on the remote.The old branch remains on the remote unchanged. renaming branch on github is involve creating a new remote branch with the desired name and deleting the old one.
+= default branch: in github each repo have one default branch(primary branch) which have these functionality.
+    -   It is the branch that GitHub displays when anyone visits the repository.
+    -   It is the branch that Git checks out locally when someone clones the repository.(When you clone a repository from a remote only default branch created on local)
+    -   By default github's default branch is name is 'main' (in older version of github default branch is master)
+    -   you can change or rename your default branch from setting of that repo.
+    -   you can't delete default branch on remote by 'git push -delete <remote> <default_branch>' command.
+    -   when anyone make PR with your repo then by default that PR is target default branch as base for merge.
+= from now onwords all learnings are based on The assumeption that each local repo has multiple remote and each remote has multiple branches.
+
+11].github upstream
+= In GitHub, we have one local repository with multiple remotes. Each remote has multiple branches, and the local repository also has multiple branches. In local for each remote, there are remote-tracking branches in the local repository, which get updated when you push to that remote's branch or pull/fetch from that branch.
+= When you run 'git push org1 b1', Git looks for the b1 branch in your local repository and pushes it to the org1 remote. If the org1 remote doesn’t already have a b1 branch, Git will create it; otherwise, it will update the existing branch. After the push, the remote-tracking branch org1/b1 in your local repository is updated (or created if it didn’t exist before).
+= So here, one local branch is pushed to different remotes. For example, the b1 local branch is pushed to each remote’s b1 branch, and accordingly, all remote-tracking b1 branches are updated.
+= So, for each branch, you can set one upstream remote branch using the command "git push --set-upstream org1 b1" or "git push -u org1 b1". Here, b1 is pushed to org1, org1/b1 is updated, and org1's b1 becomes the upstream branch for local b1. This means org1/b1 is the main connected remote branch of local b1.
+= When you clone a repository from a remote, all remote-tracking branches from that remote are created. When you create a local branch from any of these remote-tracking branches(by just 'git checkout branch_name'), the local branch is automatically set to track (set upstream to) the corresponding remote branch.(like remote have 2 branch main and b1, then you clone that remote will create 2 remote tracking branch origin/main and origin/b1 and one local branch main which is upstream for origin/main, now when you 'git checkout b1' then b1 local branch created which is upstream for origin/b1)
+= When you create totally new branch in local and then push on remote is not set upstream of that branch if you not append -u or --set-upstream tag during push.
+-
+= Advantages of set upstream for one branch.
+-
+'git pull' = 'git pull org <current_branch>' if org/<current_branch> is upstream for current_branch. otherwise it gives an error.
+'git pull --rebase' = 'git pull --rebase org <current_branch>' if org/<current_branch> is upstream for current_branch. otherwise it gives an error.
+'git fetch' = 'git fetch origin' it means update all remote tracking branch from of origin remote. "These command is work with specially a remote named origin if there is no remote with origin name then it not fetch data from anywhere".
+'git fetch --all' = fetch data from all remote and update all remote tracking branch
+'git merge @{u}' = 'git merge org/<current_branch>' if org/<current_branch> is upstream for current_branch. otherwise it gives an error.
+'git rebase @{u}' = 'git rebase org/<current_branch>' if org/<current_branch> is upstream for current_branch. otherwise it gives an error.
+'git push' = 'git push org <current_branch>' if org/<current_branch> is upstream for current_branch. otherwise it gives an error.
+-
+'git pull org' = 'git pull org <current_branch>' if current branch have org/<current_branch> as upstream. if current_branch have upstream other than this remote or it doesn’t have upstream branch then it gives an error.
+'git pull --rebase org' = 'git pull --rebase org <current_branch>' if current branch have org/<current_branch> as upstream. if current_branch have upstream other than this remote or it doesn’t have upstream branch then it gives an error.
+'git fetch org' = is update all remote tracking branch associated with org.
+'git merge org' = invalid command
+'git rebase org' = invalid command
+'git push org' = 'git push org <current_branch>' if current branch have org/<current_branch> as upstream. if current_branch have upstream other than this remote or it doesn’t have upstream branch then it gives an error.
+-
+note that 'git fetch', 'git fetch --all' and 'git fetch org' is not depend upon upstream branch.
+-
+= upstream commands
+1.'git push -u org b1' or 'git push --set-upstream org b1' is push b1 on org remote and set org/b1 as upstream for b1 branch.
+2.'git branch --unset-upstream' will remove upstream branch from current branch (if current branch have upstream branch)
+3.'git branch -vv' shows all local branches with their names, the last commit's hash, the upstream branch (if it have, in the format <remote>/<branch>), and the last commit message.[Note: git branch -v does not show the upstream branch.]
+4.'git status' display upstream branch for current branch (in its description).
+
+12].fork
+= Search for any user on GitHub by their username, go to one of their repositories, and click on Fork. You can then set the name of the forked repository and choose whether to fork only the default branch or all branches.
+= This will create a new repository in your GitHub account with the selected name and branches. This new repository is called a forked repository, and the process is known as forking.
+= Now you can clone this forked repository to your local machine, make changes, push those changes to your fork, and then create a pull request (PR) to the original repository.
+= This workflow is commonly used when contributing to open-source projects, because you typically don't have direct write access to the original repository. (In contrast, if you're collaborating with a friend or a company, you might be added as a collaborator and can push directly.)
+= However, since open-source repositories are updated frequently, you need to keep your fork in sync. To do this, you can add the original repository as a new remote in your local repo and pull updates from it from time to time.
+= This newly added remote is usually named upstream. (Note: this is just a convention for naming a remote and should not be confused with the term "upstream branch".)
+
+13].git diff
+How 'git diff' Works (Line-by-Line Comparison):
+The 'git diff' command compares two version of code line by line. When you run 'git diff' between two versions of a code (e.g., code version v1 and code version v2), here v1 compare line by line with v2 for each file one by one:
+    1.file presant in v1 but not in v2: then whole text of v1's file is displayed with green text.
+    2.file present in v2 but not in v1: then whole text of v2's file is displayed with red text.
+    3.if file presant in both version of code: So code is compare in both file line by line.
+        I.new code added: If code v1 has extra lines that are not present in v2, Git highlights those added lines in green.
+            Code is the same until line X.
+            In v1, new lines from X+1 to X+5 are added.
+            After X+5 in v1 and from X+1 in v2, the code is the same.
+            → Git shows lines X+1 to X+5 in green to indicate new code was added.
+        II.old code removed: If v2 has lines that are missing in v1, Git highlights those removed lines in red.
+            Code is the same until line X.
+            In v2, lines X+1 to X+5 exist, but they are missing in v1.
+            After line X+5 in v2 and from line X+1 in v1, the code is the same.
+            → Git shows lines X+1 to X+5 in red to indicate code was removed.
+        III.change in code: If lines in v1 are modified compared to v2, Git treats it as both a deletion and an addition:(The old version of the lines (from v2) will be shown in red, The new version of the lines (from v1) will be shown in green.)
+            Code is the same until line X.
+            In v2, lines X+1 to X+5 exist.(Which are changed in v1)
+            In v1, those lines are changed — only 3 new lines from X+1 to X+3 are added instead of 5 lines, and after that (from line X+4 in v1 and from X+6 in v2), both versions are again the same.
+            → Git shows:
+            v2’s lines X+1 to X+5 in red (removed)
+            v1’s lines X+1 to X+3 in green (added)
+            This indicates that existing code was modified.
+- diff commands:
+    = comparing 2 branch means compare each and every file of branch with each other.
+    1.'git diff <branch_name>'    (compare your current branch with <branch_name>. in upper example current branch = v1, <branch_name> = v2)
+    2.'git diff <branch_1>..<branch_2>' or 'git diff <branch_1> <branch_2>'   (compare branch_1 and branch_2 v1=branch_1 and v2=branch_2)
+    3.'git diff <branch_1>...<branch_2>'  compare branch_1 with commmon ancestor of branch_2. (v1=branch_1, v2=branch_2)
+    A---B---C   branch2
+     \
+      D---E---F   branch1
+      'git diff branch1..branch2' compare branch1 till commit F and branch2 till commit C
+      'git diff branch1...branch2' compare branch1 till commit F and branch2 till commit A(compare from commmon ancestor)
+    in command 1, 2, 3 git diff compare v1's ccommited code with v2's commited code and ignoer uncommited code.
+    5.'git diff <commit hash 1> <commit hash 2>'  (compare branch's state after commit1 and commit2, v1 = code after commit1 and v2 = code after commit2)(note that here both commit are stand in differant differant branches also, in such a case it give normal output as you can loggically think)
+    6.'git diff' (compare your current code(visible in editor, with all your modification which is not commited or staged) with your current staged code(by git add .) editor's code=v1, staged code=v2, if you don't stage anything then code after last commit of current branch act as v2)
+    7.'git diff file1.txt file2.html'(here command 6 run but show changes for file1 and file2, between non staged and staged code)
+    8.'git diff --cached' or 'git diff --stagged' (staged code and code after last commit are compare, v1=staged code v2=code after last commit, if there is no staged code then this code gives an empty result)
+
+14].github Pull Request(PR)
+= There is 2 ways to contribute on someone's repo in github.
+  - 1. Be added as a collaborator on a specific repo by the owner. Then, simply clone the repo, add your contributions, and push them to that repo.
+  - 2. Fork the repo in your account, clone forked repo, add your contributions, push them to forked repo, make PR from forked repo to original repo, after merge PR your contributions are merged to original repo.
+= Pull Request is method to merge your code with another code.
+= In a PR, a branch from one repo is merged into a branch of another repo.
+= PR related terms
+  base repository: The repository into which you want to merge changes.
+  base branch: The branch of the base repository where you want to merge the changes.
+  head repository: The repository from which you want to merge changes.
+  compare branch: The branch of the head repository that you want to merge into the base branch.
+  [For example, if i have one branch featuer1 in repo1 and i went to merge it with repo2's featuers branch then, repo2=base repo, featuers=base branch, repo1=head repo, featuer1=compare branch]
+= Who can create a PR from one particular repo? 1.organization's owner(organization's owner is create PR from any repo of his own organization) 2.repo's collaborater(you can create PR from repo of other organization in which you are added as collabrator).
+= Pull Request creation flow
+  - 1: For create PR for one particular repo, open 'Pull requests' tab of that repo, (Here, all PRs are listed in which this repo is set as the base repo), and click on 'New pull request'
+  - 2: Now set base repo, base branch, head repo and compare branch. (Note that if your current repo is not a forked repo, then you have only option to select the base branch and compare branch not base repo and head repo because both the base and head repo are the same (your current repo). In this case, the pull request is created within the same current repo.) (if your repo is a forked repo, then you can choose either the forked repo (current repo) or the original repo as the base repo, and select one of its branches as the base branch. However, you can only select the current repo as the head repo, and choose one of its branches as the compare branch.)
+  - 3: If base branch already have all commits that are present in compare branch then you are not able to create PR.
+  - 4: If compare branch has extra commits over base branch then you can see diff between both branch(according to section 13 compare branch = v1 and base branch = v2)
+  - 5: Now click on 'Create pull request' and Add a title (which is by default last commit of compare branch) and description of PR.
+  - 6: Now create open PR or draft PR by dropdown of 'Create pull request' button.(now PR is listed on base repo's 'pull requests' tab)
+= Pull request structure
+  - Commits tab: list of all extra commits of compare branch which are not present in base branch.
+  - Conversation tab: contains conversation between all collbrator of base repo.here any collbrator is can leave comment in this tab.you can add bold, italic etc... text in comments and also mention any of the collbrator of base repo by '@' tag(email is sended when you mention someone in comment).
+                      - 'Ready for review' button in conversation tab: If your PR is draft PR then this button is visible.If any collbrator of base repo click on this button then PR's state is changed from draft to open.(Note that draft PR is not able to merge only open PR is can be merge)
+                      - 'Resolve conflicts' button: If during merge of PR if conflicts are occuer then PR is not able to merge and this button is visible(conflicts are occuer if base and compare branch are diverged and their commit's changes are overlap (as discussed in section 9.1.1)) (If conflicts are not occuer then message was displayed 'No conflicts with base branch'). Click on 'Resolve conflict' button will open editable window for each and every conflicting file of compare branch, you can change code from here and also make commit which is apply on compare branch (This process is similar to merge base branch in compare branch, run 'git merge <base_branch>' when you are in compare branch) and this commit is also visible in head repo as well, but it is bad practice.(After making PR if you push changes on compare branch then it is also reflect on PR, so for resolve conflicts make changes on compare branch and push them not make commit from direact github by 'Resolve conflicts' button.).
+                      - After making PR all changes on compare branch is mentioned on this tab(like make commit or push by someone)
+                      - in this tab you have options to merge PR in 3 ways(any collabrator of base repo can merge PR)
+                        1.'Merge pull request': This option is open commit window, now write commit message for merge commit and do 'Confirm merge' which is merge compare branch with base branch with merge commit.This merge is similar to run 'git merge <compare_branch>' when you are in base_branch, but here always merge commit is occuer (which is connect all commits of compare branch with base branch) even if both branches are not diverged.
+                        2.'Squash and merge': This option is squash all extra commits of compare branch into one commit(squash is discussed later) and then apply this squashed commit on top of base branch.
+                        3.'Rebase and merge': This option is rebase compare branch with base branch, So extra commit of compare branch will apply on top of base branch.And then this updated branch is store in base branch.(So here extra commit of compare branch is apply on top of base branch).
+                      - 'Close pull request' will close the PR(when your PR is not going to merge then close it with this option)
+  - Files changed tab: contains diff between base branch and compare branch. (compare branch = v1 and base branch = v2).
+                      - every collbrator of base repo can see '+' icon for every line in this tab, by click on this icon you can leave single comment for any particular line by 'Add single comment' button which is visible in Conversation tab.
+                      - here you can conduct review also. in which you can leave multiple comment under one review. by click on button 'Start review' which is visible when '+' icon is clicked.after leave all comments publish your review on 'Conversation tab' by click on 'Finish your review' button.select type of review (Comment, Approve or Request changes) and title of review during click on 'finish your review' button.now all comments of your review will display in 'Conversation tab' with title of review and with icon(which is indicate type of review)
+                      - for review comments or for single comments any collabrator of base repo will give replay to it and make conversation as 'Resolve conversation' also(it means this conversation is completed and given changes are completed)(resolved conversation is srinked)
+- Pull request merging flow
+  - 1: Generally create draft PR and when it ready for review then make it open by 'Ready for review' button.
+  - 2: now reviewer will leave comments and conduct review of your code.
+  - 3: now make changes according to reviewr's suggestion and Resolve conversation accordingly.
+  - 4: if merge conflicts are occuer then rebase your compare branch with base branch and push it.
+  - 5: now after review and changes merge your PR or close your PR.
+- state of PR
+  draft: which is not able to merge, when you click on 'ready for review' then it go to open state.
+  open: it can be merged
+  close: when PR is not going to merge then.
+  merged: state of merged PR.
+
+15].git init
+= When you create repo in github with no README.md then repo is intlized with no branch and commits.When you clone this repo and create first commit then new branch 'main' is created and this commit are placed in this branch.When you push this repo then this branch is set as default branch for that repo.
+= You can switch any local normal repo in git repo by 'git init' command.This command add '.git' folder in your local folder.
+= There is no branch and commits at starting of git repo which is intlized by 'git init' command.When you make first commit Of this kind of repo then 'main' branch is created and this commit are placed in this branch.
+= Now you can add remote to this git repo and push on github as well. You can also apply all github commands on this repo.
+= 'git init -b <branch_name>' is convert local repo into git repo and when first commit is make then '<branch_name>' branch is created not 'main' and this commit are placed in this branch.
+= 'git config --global init.defaultBranch <branch-name>' this command is sets the default branch name globally for all new repositories that you initialize using git init. after that whenever you run git init command then than that repo is created with default branch <branch-name> instead of main.
+- 'git config --global --unset init.defaultBranch'  unset default branch and make it main
+- 'git config --global init.defaultBranch'  show default branch for init.If you set default branch for init then it show otherwise not.
+
+16].2 types of merge
+= Whenever merge is occuer between 2 branches in github (by pull command('git pull <remote> <branch>') or by merge command('git merge <branch>')) Then there is 2 types of merge can be occuer.
+i. fast-forward merge: When one branch has all commits of another branch then this types of merge was occuer(scenario 1 and 2 in section 9.1.1)
+                       In fast forward merge there is no need of merge commit branch are merged without merge commit.
+ii. three-way merge: When both branches are diverged from eachother (scenario 3 in section 9.1.1) Then three-way merge is occuer.
+                     In three-way merge a merge commit is needed for connect both branch.
+= You can manually convert fast-forward merge into three-way merge by '--no-ff' command.
+= In 'git merge --no-ff <branch>' and 'git pull --no-ff <remote> <branch>' command if fast-forward merge is occuer then it converted into three-way merge and open nano editor to write commit message.In --no-ff merge you need to merge commit for connect both branches.
+= --no-ff is used to track the history (usefull for documenting record and for record keeping purpose)
+= --no-ff is useless with rebase (because a merge commit is not existed in rebase anywhere).
+= during three-way merge or during rebase process whenever merge conflicts are occuer then you can see it by 'git status'.
+
+17].'Three tree architecture' in git
+= Git is working based on Three tree architecture.
+= 1.working directory(working Tree): This is the actual files and folders you see and edit in your project directory, Example: If you open a file in VS Code and edit it — you are working in the working directory.
+= 2.staging index(cache/staging area): This is an intermediate area where you put changes you want to commit. Example: After git add file.txt, that file.txt is placed in the staging area.
+= 3.commit history (HEAD/Local database): This is the actual Git database that stores your committed history. Example: After git commit, the current state in the staging area becomes a new snapshot in the repository.
+
+==============================================================================================================================================================================================================================
+

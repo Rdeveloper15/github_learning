@@ -1,0 +1,139 @@
+git configuration: https://chatgpt.com/c/681f2516-a918-800f-b061-81b4467c38d2
+
+rebase with another branch: https://docs.github.com/en/get-started/using-git/about-git-rebase
+
+git log --merge     produce a log with a list of commits that conflict between the mergin branches.
+git reset --mixed
+git reset
+git merge --abort
+
+
+HEAD: HEAD is pointer pointing your current commit. in which branch you are at which commit is pointed by HEAD.
+when you go to the privious commit or another branch then HEAD is move accordingly
+HEAD is traval ahead as you do commits on your branch.
+
+Detached HEAD: generally HEAD is pointing to the specific branch's specific commit. but when you go on privious commit of that branch by 'git checkout 'hash of commit' then HEAD is pointing to that commmit not spefcific branch and this state of HEAD is detached HEAD.
+A->B<-HEAD (main) . git checkout <B's hash>
+HEAD->A->B(main). HEAD is detached here and not attached with anyone. if here if you do any commit and switch to another branch then that commit is losse. so here chekcout to another branch for saving commit.
+A->B
+\->C 
+git chekcout -b featuer1.   A->C->HEAD(featuer1)   main don't have C and featuer1 don't have B and HEAD is now attached and now you can back to the main branch safely.
+add commit in betwwen is here =============(explore your self)
+
+
+SSH VS HTTP
+
+github certification exam: https://docs.github.com/en/get-started/showcase-your-expertise-with-github-certifications/registering-for-a-github-certifications-exam#about-identification-requirements
+
+
+==============================================================================================================================================================================================================================
+
+git reflog
+= git reflog is shows a history of where you HEAD and branch have been.
+= reflog track each movment of HEAD.
+= in your repo when you do commit, checkout branch, remove any commit, perform rebase, merge, pull, amend in commit, create or pop stash. then one entry is add in reflog of that repo.
+= this entry look like. <HEAD's pointing commit before process> <HEAD's pointing commit after process> <author> <timestamp> <change: like commit, commit(amend) etc..>: <message of process
+= 'git reflog' is show history like that <HEAD'S pointing commit after that process> HEAD@{n} <change>: <message>,   here when you do new entry then it add at first with HEAD@{0} here we see entry like in HEAD@{0}, HEAD@{1} ...,   HEAD@{0} means now head where pointing, head 1 means where head is pointing before 0 and so on...
+= note that here HEAD@{n} gives you a nth entry's commit hash of reflog.(git checkout HEAD@{2}, is checkout to detached head HEAD@{2}'s commit)
+= note that each reflog entry connect with either branch or either detached head's commit. so for show branch specific entry 'git reflog show <branch_name>'
+= reflog are kept for 90 days.
+= Git keeps track of updates to the tip of branches using a mechanism called reference logs, or "reflogs."
+
+HEAD
+= HEAD is pointer which is pointing to current branch's lastest commit.
+= HEAD is dynamic and if you create new commit then it pointes to that new commit. if you switch branch then it points to switched branch's latest commit.
+= HEAD sometimes points to direct commit without branch and that type of HEAD is detached HEAD.
+= git diff HEAD = compare staged and unstaged(modified) code with code till HEAD commit
+= git rebase -i HEAD^^^^ = iterate your last 4 commit one by one interactvely and rebase commit history by select option(no usefull for detached head, used but if you checkout from there)
+                            (pick = keep the commit as-is.
+                            reword = change the commit message.
+                            edit = pause rebase to manually change the commit.
+                            squash = combine with the previous commit.
+                            drop = remove a commit entirely.)
+= git diff main..HEAD   =   differance between main and commit till HEAD.
+deatached HEAD state: HEAD points to some commit instaed of branch.  from getting out of detached HEAD. (git checkout branch or git checkout -b new_branch,   without new_brach if you are on detached HEAD then making new commit is loose of that commit)
+git status  , on branch main or HEAD detached at <hash>
+during git log
+commit are come with these options
+commit hash (HEAD -> main)  you are on main branch and tip of that branch is this commit and HEAD points to that commit
+commit hash (HEAD, main)    your HEAD is not on branch but point to that commit and this commit is tip of main branch
+commit hash (HEAD)   detached head and this commit not part of any branch.
+HEAD on merge and rebase during merge conflicts are same HEAD which is during commit is cause of conflicts.
+
+stash
+git stash = unchanged and staged changes are saved on stash.
+git stash pop
+git stash apply
+by default Git won't stash changes made to untracked or ignored files.
+git stash -u or git stash --include-untracked  is tell to stash untracked files also.
+git stash -a or git stash --all  for include untracked and ignore file also.
+you can run multiple stash, git stash list (show all stash, in folowwing order, 'stash@{number}: WIP on <branch for stash>: <commit which on top you create stash> our new homepage"  WIP = work in progress)
+git stash save "message",  message displays instaed of :<commit> our new homepage during stash list.
+git stash pop recent stash is reapply stash@{0},  you can choose git stash pop stash@{number} for reapply it.
+stash is used to save your changes for later.
+git stash show   summery for stash
+git stash show -p or git stash show --patch    full detail summery of stash
+git stash -p or git stash --patch    convert your changes in smaller hunk and iterate through each hunk and now you can decide weather you went to stash it ot not.
+sometimes git stash is diverged from your branch and it runs you into conflicts so here use     git stash branch <branch_name> stash@{1}  create new branch from commit which your create stash and apply this stash on that branch.
+git stash drop stash@{1}  for dropd your stash.
+git stash clear for drop all stash.
+
+reset
+git status: See differences between these trees.
+git diff: See changes between working directory and staging.
+git diff --cached: See changes between staging and last commit.
+git reset: Move files between the trees (e.g., from staging back to working).
+git checkout: Update working directory to match a commit.
+git reset <hash> is take your branch behind till hash of commit, git checkout <hash> is not affect branch but create detached HEAD but reset move branch not detached hash.
+git reset --soft <hash> or git reset --soft HEAD~1   => move your branch to this hash and remining code is place on staging area
+git reset --mixed <hash> or git reset --mixed HEAD~1   => move your branch to this has and remining code is place on working area
+git reset --hard <hash> or git reset --hard HEAD~1   => move your branch to this hash and remining code is remove completely
+by default git reset pass --mixed if we don't pass any argument.
+HEAD~1 = last commit's hash
+HEAD~2 = section last commmit's hash
+git reset --hard HEAD@{n}   reset till head@{n} current branch
+
+
+==============================================================================================================================================================================================================================
+
+revert
+revert is safer undoing process,
+revert is not move your current HEAD but it add new commit which is oposite of taget commit.
+git revert <hash>   make new commit and open window for commit message which is contain reverse changes of following commit, here if any other commit after that commit is change on same line then merge conflict occuer.
+after merge conflict occuer you have 3 options  skip, continue and abort
+git revert -e <hash> or git revert --edit <hash> is default option
+git revert --no-edit <hash>  will not open the editor.
+git revert -n <hash> or git revert --no-commit <hash> revert the changes in staging area but not make commit
+
+==============================================================================================================================================================================================================================
+
+
+receives pull requests and merges by default (in hosted platforms like GitHub/GitLab).
+is often used as the main development or production branch.
+shown during git branch -a
+remotes/origin/HEAD -> origin/main  ??
+
+
+= remining topics
+
+git log  =
+git patch   =
+git squash
+SSH vs HTTP
+git configuration
+remove and restore
+
+git reflog
+git reset --hard HEAD@{1}
+git reflog show refs/stash       reflog for stash
+
+standard rebase = normal rebase
+git rebase -i <branch> or git rebase --interactive <branch>     is rebase interactively,
+git rebase --d 
+git rebase --p 
+git rebase --x 
+git rebase --onto <newbase> <oldbase>,,  git rebase --onto main featureA featureB
+
+
+========================================================================================================================================================================================================================================================================================
+

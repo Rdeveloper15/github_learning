@@ -1,0 +1,73 @@
+
+ppt:-  https://docs.google.com/presentation/d/1_IqN_a27BFr2ItUmPvYJacN-KVcQi_GUK5YeLmDZJNU/edit#slide=id.g24167233346_0_18
+
+steps to amend an older commit
+1. git rebase -i HEAD~N  (N  = number of commits you want to go back from the latest commit (HEAD).)
+2. Find the commit you want to amend and change pick to edit.(In Nano editor: Press CTRL + O (Save), Enter (Confirm), then CTRL + X (Exit).)
+3. Amend the Commit(git add ., git commit --amend)
+4. git rebase --skip (move your head to latest commit)
+
+steps to remove amended changes from commit
+1. git reflog (here you can found hash of amended commit and also original commit)
+2. copy hash of original commit
+3. git rebase -i <paste hash here> (In Nano editor: Press CTRL + O (Save), Enter (Confirm), then CTRL + X (Exit).)
+4. git rebase --continue (solve merge conflict which is occuer between amended commit and original commit)
+5. git add .
+6. git rebase --continue
+
+0].editors
+- nano editor
+- vim editor
+- vs code 
+git config --global core.editor "code --wait"  (set your editor for interaction(like for commit message by git commit command))
+
+1].differance between git log, show, blame
+https://chatgpt.com/c/67cffc78-24fc-8004-be6b-1066b9a53ced
+git log (detail of all commit)
+git log --oneline (all commit in one line)
+git log -p (all commit with display changes in file)
+git log --oneline --graph --decorate --all (graphical representation of commit history.)
+git log --author="rspa-odoo"  (to only show the commit created by a specific author)
+git log --since="2025-03-04"  (to only show the commit after march 4)
+git log <file name>  (commits of this file)
+git log <branch name>  (commits of this branch)
+git show (last commit with display changes)
+git show <commit hash> (commit with display changes)
+git blame <file name> (Displays line-by-line history of a file, showing which commit and author last modified each line.)
+
+5].git add 
+git rm --cached raj.txt (for make raj.txt to staged to untracked(deleted))
+
+8].git restore
+if you accidently delete raj.txt 
+git restore raj.txt (for restore deleted file)(if you don't deleted but modified then it get back to at original one)
+git restore . (restore all deleted file from privious commit)
+git restore --staged myfile.txt (make staged file to unstaged)
+git restore --staged .
+
+12].git amend in privous commit
+git rebase -i <commit log>^          if you went to change root(first) commit git rebase -i --root
+change pick to edit
+git add .
+git commit --amend
+git rebase --continue
+
+13].ubantu command
+mkdir - make direactory
+touch - make file
+mv - move file, mv filename direactoryname
+cp - copy file, cp filename direactoryname
+cd - change direactory
+pwd - print working direactory(current working directory)
+ls - list all files
+ls -R (list all direactory with sub direactory with recursive)
+touch .raj  (.raj is hidden file not visible by any one)
+ls -a (list hidden file also)
+history
+vim TODO (now TODO file open in terminal 'i' type so you can edit that file after editing, after editing ESC, then :wq for save file, :q for don't save)
+
+
+
+
+after complete github
+clean your main github repo and push all important local code on github.
