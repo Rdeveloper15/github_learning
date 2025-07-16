@@ -417,5 +417,56 @@ ii. three-way merge: When both branches are diverged from eachother (scenario 3 
 = 2.staging index(cache/staging area): This is an intermediate area where you put changes you want to commit. Example: After git add file.txt, that file.txt is placed in the staging area.
 = 3.commit history (HEAD/Local database): This is the actual Git database that stores your committed history. Example: After git commit, the current state in the staging area becomes a new snapshot in the repository.
 
+18].HEAD
+HEAD: HEAD is a pointer which is pointing to the tip(latest commit) of the current branch.
+Movement of HEAD: When a new commit is made on the current branch, HEAD moves to point to that new commit, When you switch to another branch, HEAD moves to point to the tip of the newly checked-out branch.
+Detached HEAD:
+    When you checkout a specific commit using 'git checkout <commit-hash>', Git moves HEAD to point to that commit directly instead of any branch. This state of HEAD is called a Detached HEAD.
+    Detached HEAD is points to a specific commit, not to any branch.
+    If you make a new commit in this state, HEAD moves to the new commit, but it still isn’t attached to any branch.
+    If you now switch to another branch by 'git checkout <branch-name>', your new commit becomes unreachable (lost).
+    If in Detached HEAD state if you create new commit and after that switch and create new branch from it by 'git chekcout -b <branch_name>' then this new commit is now becomes the tip of the new branch and your HEAD is also moves to the tip of this new branch.
+    If you are in detached HEAD state then 'git branch' display '(HEAD detached at <HEAD's commit>)' line in green.
+Commit connection:
+    In Git, each commit points to its previous commit, but not to its next commits.
+        If a commit is the first commit of a repository or branch, it is connect with 0 privious commit.
+        A normal commit connect with 1 privious commit.
+        A merge commit is connect with 2 privious commit.
+    branch b1's commit history: A<-B<-D        A is connect with 0 commit, B and C is connect with A, D is connect wiht B and C and A(indireactly)
+                                  \  /
+                                   C
+    HEAD's behaviour for each commit:
+        HEAD at D all 4 commit are displayed in 'git log'
+        HEAD at C 'A<-C' displayed in 'git log'
+        HEAD at B 'A<-B' displayed in 'git log'
+        HEAD at A 'A' displayed in 'git log'
+        if HEAD at B and you create new commit from it and then create new branch from that new commit then new branch look like 'A<-B<-new_commit'.
+    When you are on detached HEAD state then it is consider as branch which's tip is pointed by HEAD.
+        In upper example If you checkout to the commit B then it is consider as one branch 'A<-B'
+    All branch's operations are performed as consideration of HEAD as new branch's tip in detached HEAD state.
+        In upper example If HEAD at B then 'git diff b1..HEAD' is give diff between b1 and HEAD=A<-B branch.same for 'git diff b1...HEAD', 'git diff' and 'git diff --staged' command.
+    Amend in last commit in detached state and then switch to the another branch('git switch <branch>') then that amended commit is lost.(for save that commit do 'git checkout -b <branch_name>')
+Insert new commit between the history of an existing branch:
+    switch to the specific commit by 'git checked <commit hash>' (Detached HEAD)
+    add new commit and make another branch from this new commit by 'git checked -b <branch_name>'
+    now rebase your privious branch by this new branch and new commit is added on between of privious branch.
+'git log' symbol for HEAD commit:
+    When you run 'git log' then
+        - '(HEAD -> <current_branch>)' printed beside of HEAD commit's hash.If HEAD is pointing to the specific branch's tip.(HEAD is in attached state)
+        - '(HEAD, b1, b2)' printed beside of HEAD commit's hash.If HEAD is pointting to the specific branch(b1, b2)'s tip and HEAD is in detached state.('git checkout <b1's tip's hash>')
+        - '(HEAD) printed beside of HEAD commit's hash.If HEAD is in detached state and not pointing to the any specific branch's tip
+
+19].Interactive Rebase:
+    For rebase latest 4 commit of current branch run 'git rebase -i HEAD^^^^' or 'git rebase -i HEAD~4'
+    - this command will open editor which is display latest 4 commit, in which each line is displayed in '<operation> <commit hash> <commit message>' format.
+    - now set one of these operation for each commit (pick/P, reword/r, edit/e, drop/d etc...) in operation and close the editor.
+    - now rebase is starting from 4th commit of top.
+    - easy understanding of rebase process. (b1: A<-B<-C<-D<-E<-F and run 'git rebase -i HEAD~4' and set C=drop, D=reword, E=edit, F=pick and close the window)
+        - 1.b1: A<-B and temp_branch=A<-B<-C<-D<-E<-F now rebase b1(A<-B) with temp_branch till C(A<-B<-C) but here C is set to drop so drop the C and not include in b1. 
+        - 2.b1: A<-B and temp_branch=A<-B<-D<-E<-F now rebase b1(A<-B) with temp_branch till D(A<-B<-D) here for reword the D(means change the commit message) so it open the editor for change commit meesage.after changing the commit message and close the editor updated D is add in b1.
+        - 3.b1: A<-B<-D' and temp_branch=A<-B<-E<-F now b1(A<-B<-D') with temp_branch till E(A<-B<-E) here for edit E(amend in E) rebase process is being stop, so now make change in code and amend it in E and you can create new commit as well(X') now continue the rebase by 'git rebase --continue' now updated E and X' is appply on b1.
+        - 4.b1: A<-B<-D'<-E'<-X' and temp_branch=A<-B<-F now b1(A<-B<-E'<-X') with temp_branch till F(A<-B<-F) here F is pick as itis an apply in b1.(final b1: A<-B<-D'<-E'<-X'<-F). But here note that during apply on F maybe merge conflicts are occuer because here (A<-B<-E'<-X' is rebased by A<-B<-F and both are diverged)So we in that senario (you can skip the F, make changes in merge conflicts and continue the rebase or abort the rebase process by standard rebase commands).
+
 ==============================================================================================================================================================================================================================
 
+20].git reflog.

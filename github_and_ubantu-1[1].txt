@@ -45,13 +45,6 @@ git restore . (restore all deleted file from privious commit)
 git restore --staged myfile.txt (make staged file to unstaged)
 git restore --staged .
 
-12].git amend in privous commit
-git rebase -i <commit log>^          if you went to change root(first) commit git rebase -i --root
-change pick to edit
-git add .
-git commit --amend
-git rebase --continue
-
 13].ubantu command
 mkdir - make direactory
 touch - make file

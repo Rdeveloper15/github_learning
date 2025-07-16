@@ -7,24 +7,9 @@ git reset --mixed
 git reset
 git merge --abort
 
-
-HEAD: HEAD is pointer pointing your current commit. in which branch you are at which commit is pointed by HEAD.
-when you go to the privious commit or another branch then HEAD is move accordingly
-HEAD is traval ahead as you do commits on your branch.
-
-Detached HEAD: generally HEAD is pointing to the specific branch's specific commit. but when you go on privious commit of that branch by 'git checkout 'hash of commit' then HEAD is pointing to that commmit not spefcific branch and this state of HEAD is detached HEAD.
-A->B<-HEAD (main) . git checkout <B's hash>
-HEAD->A->B(main). HEAD is detached here and not attached with anyone. if here if you do any commit and switch to another branch then that commit is losse. so here chekcout to another branch for saving commit.
-A->B
-\->C 
-git chekcout -b featuer1.   A->C->HEAD(featuer1)   main don't have C and featuer1 don't have B and HEAD is now attached and now you can back to the main branch safely.
-add commit in betwwen is here =============(explore your self)
-
-
 SSH VS HTTP
 
 github certification exam: https://docs.github.com/en/get-started/showcase-your-expertise-with-github-certifications/registering-for-a-github-certifications-exam#about-identification-requirements
-
 
 ==============================================================================================================================================================================================================================
 
@@ -38,27 +23,6 @@ git reflog
 = note that each reflog entry connect with either branch or either detached head's commit. so for show branch specific entry 'git reflog show <branch_name>'
 = reflog are kept for 90 days.
 = Git keeps track of updates to the tip of branches using a mechanism called reference logs, or "reflogs."
-
-HEAD
-= HEAD is pointer which is pointing to current branch's lastest commit.
-= HEAD is dynamic and if you create new commit then it pointes to that new commit. if you switch branch then it points to switched branch's latest commit.
-= HEAD sometimes points to direct commit without branch and that type of HEAD is detached HEAD.
-= git diff HEAD = compare staged and unstaged(modified) code with code till HEAD commit
-= git rebase -i HEAD^^^^ = iterate your last 4 commit one by one interactvely and rebase commit history by select option(no usefull for detached head, used but if you checkout from there)
-                            (pick = keep the commit as-is.
-                            reword = change the commit message.
-                            edit = pause rebase to manually change the commit.
-                            squash = combine with the previous commit.
-                            drop = remove a commit entirely.)
-= git diff main..HEAD   =   differance between main and commit till HEAD.
-deatached HEAD state: HEAD points to some commit instaed of branch.  from getting out of detached HEAD. (git checkout branch or git checkout -b new_branch,   without new_brach if you are on detached HEAD then making new commit is loose of that commit)
-git status  , on branch main or HEAD detached at <hash>
-during git log
-commit are come with these options
-commit hash (HEAD -> main)  you are on main branch and tip of that branch is this commit and HEAD points to that commit
-commit hash (HEAD, main)    your HEAD is not on branch but point to that commit and this commit is tip of main branch
-commit hash (HEAD)   detached head and this commit not part of any branch.
-HEAD on merge and rebase during merge conflicts are same HEAD which is during commit is cause of conflicts.
 
 stash
 git stash = unchanged and staged changes are saved on stash.
@@ -93,9 +57,6 @@ HEAD~1 = last commit's hash
 HEAD~2 = section last commmit's hash
 git reset --hard HEAD@{n}   reset till head@{n} current branch
 
-
-==============================================================================================================================================================================================================================
-
 revert
 revert is safer undoing process,
 revert is not move your current HEAD but it add new commit which is oposite of taget commit.
@@ -107,12 +68,10 @@ git revert -n <hash> or git revert --no-commit <hash> revert the changes in stag
 
 ==============================================================================================================================================================================================================================
 
-
 receives pull requests and merges by default (in hosted platforms like GitHub/GitLab).
 is often used as the main development or production branch.
 shown during git branch -a
 remotes/origin/HEAD -> origin/main  ??
-
 
 = remining topics
 
@@ -133,7 +92,3 @@ git rebase --d
 git rebase --p 
 git rebase --x 
 git rebase --onto <newbase> <oldbase>,,  git rebase --onto main featureA featureB
-
-
-========================================================================================================================================================================================================================================================================================
-
