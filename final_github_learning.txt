@@ -467,6 +467,53 @@ Insert new commit between the history of an existing branch:
         - 3.b1: A<-B<-D' and temp_branch=A<-B<-E<-F now b1(A<-B<-D') with temp_branch till E(A<-B<-E) here for edit E(amend in E) rebase process is being stop, so now make change in code and amend it in E and you can create new commit as well(X') now continue the rebase by 'git rebase --continue' now updated E and X' is appply on b1.
         - 4.b1: A<-B<-D'<-E'<-X' and temp_branch=A<-B<-F now b1(A<-B<-E'<-X') with temp_branch till F(A<-B<-F) here F is pick as itis an apply in b1.(final b1: A<-B<-D'<-E'<-X'<-F). But here note that during apply on F maybe merge conflicts are occuer because here (A<-B<-E'<-X' is rebased by A<-B<-F and both are diverged)So we in that senario (you can skip the F, make changes in merge conflicts and continue the rebase or abort the rebase process by standard rebase commands).
 
-==============================================================================================================================================================================================================================
-
 20].git reflog.
+= Reflog stands for Reference Log.
+= It keeps a local history of almost all actions performed in your local Git repo.
+= Whenever you perform any action in your local repo then that action is recorded in your reflog.
+= The reflog is local-only and does not affect or reflect in remote repo.
+= By default, reflog entries are preserved for 90 days.
+= There are primarily three types of reflogs in Git.
+= HEAD Reflog:
+    - Tracks all movements of the HEAD reference.
+    - HEAD reflog stored in your local repo's .git folder at .git/logs/HEAD path.
+    - An entry is added to the HEAD reflog whenever action performed in which HEAD is move its state.(like in 'git checkout' or in 'git commit')
+    - for print HEAD reflog run 'git reflog' or 'git reflog show HEAD'.
+        - The HEAD reflog prints each line of HEAD movements in the format: '<commit hash> HEAD@{n}: <operation>: <operation description>'
+        - <commit hash> = The hash of the HEAD commit after the operation is completed.
+        - n = The reflog entry number, where the latest entry is n=0, and it increments with each previous entry (n=1, n=2, etc.).
+        - <operation>: <operation description> = is describe the operation in which HEAD is moved it's state
+            - some of the example in which HEAD move it's state 
+                'commit: <new_commit_message>'[new commit added]
+                'commit (amend): <new_commit_message>'[amend in commit]
+                'checkout: moving from <branch1> to <branch2>'[checkout to the one branch from anohter branch or commit(detached HEAD)]
+                'commit (merge): <merge commit message>'[merge one branch into anohter branch and merge commit is occuer, after that HEAD is pointing to that merge commit]
+                'merge <branch>: Fast-forward'[merge <branch> into anohter branch and fast-forward merge is occuer]
+        - Note: Reflog entries are added after the operation is completed, so the <commit hash> reflects the state of HEAD after the operation.
+= Branch Reflog:
+    - Each branch of current local repo has its own reflog which is track the history of that specific branch.
+    - Branch reflog is stored in your local repo's .git folder at .git/logs/refs/heads/ path.
+    - Whenever a action performed on any branch then entry is added on that branch's reflog.
+    - You can see the branch's reflog by 'git reflog <branch_name>' command.
+        - The branch reflog prints each recorded action of the branch in the format: '<commit_hash> <branch_name>@{n}: <action>: <action_description>'
+        - <commit_hash> = The hash of the tip commit of the branch after the action is complete.
+        - <branch_name> = current branch name.
+        - n = The reflog entry number, when the latest entry is n=0, and it increments with each privious entry (n=1, n=2 etc...).
+        - <action>: <action description> = is describe the action performed on the particular branch.
+            - some of the example of action performed on the branch.
+                'commit: <new_commit_message>'[commit added on branch]
+                'commit (amend): <new_commit_message>'[amend in commit]
+                'branch: Created from <branchA>'[your branch is created from branchA],
+                'commit (merge): <merge commit message>'[merge another branch in current branch and merge commit is occuer]
+                'merge branchA: Fast-forward'[merge branchA in current branch and fast-forward merge is occuer]
+        - Reflog entries are recorded after the operation is completed, so the <commit_hash> represents the tip of the branch after the operation is completed.
+= Stash Reflog:
+    - discussed in next section
+= commit structure
+    - In Git local, after creating a commit, it is not removed from memory. Its hash, commit message, and changes are permanently stored in local memory, and it always points to its previous commit.
+    - For example, in branch b1:A <- B <- C Now if you reset the commit using git reset HEAD~1, the branch becomes: A <- B, But commit C is not lost from memory. Currently, the branch contains A <- B, but C still exists in memory and has parent B.
+    - Similarly, if we amend commit C (e.g., git commit --amend), the branch becomes: A <- B <- C' Here, C is not removed from memory; it is just hidden. C is still connected with B as its parent.
+= Use of Reflog
+    - Reflog is used when you amend a commit or reset a commit. You can find the previous commit’s hash in the reflog(reflog almost contain each commit's hash), then checkout to that commit using git checkout <hash>. After that, create a branch from the detached HEAD — your lost commit will be recovered!.
+
+==============================================================================================================================================================================================================================

@@ -1,38 +1,24 @@
-19].git reflog
-= Reflog stands for Reference Log.
-= It keeps a local history of almost all actions performed in your local Git repository.
-= Whenever you perform any action in your local repo then that action is recorded in your reflog.
-= The reflog is local-only and does not affect or reflect in remote repo.
-= By default, reflog entries are preserved for 90 days.
-= There are primarily three types of reflogs in Git.
-= HEAD Reflog:
-    - Tracks all movements of the HEAD reference.
-    - HEAD reflog stored in your local repo's .git folder at .git/logs/HEAD path.
-    - An entry is added to the HEAD reflog whenever action performed in which HEAD is move its state.(like in 'git checkout', 'git commit', 'git reset', 'git rebase', 'git merge' etc...)
-    - for print HEAD reflog run 'git reflog' or 'git reflog show HEAD'.
-        - HEAD reflog print each line of HEAD movements in '<commit hash> HEAD@{n}: <operation>: <operation description>' format.
-        - <operation>: <operation description> = 'commit: <new_commit_message>'[new commit added], 'commit (amend): <new_commit_message>'[amend in commit], 'checkout: moving from <branch1> to <branch2>'[checkout to the branch or commit(detached HEAD)], 'commit (merge): <merge commit message>'[merge one branch into anohter branch and merge commit is occuer.], 'merge <branch>: Fast-forward'[merge <branch> into anohter branch and fast-forward merge is occuer]
-        - <commit hash> = commit hash at the operation
-        - n = entry number, latest entry n=0, and increase one by one n=1, n=2 etc...
-        - here reflog entry are added after operation is completed, so <commit hash> is hash of HEAD commit after the operation is done.
-= Branch Reflog:
-    - Each branch of current local repo has its own reflog which is track the history of that specific branch.
-    - Branch reflog is stored in your local repo's .git folder at .git/logs/refs/heads/ path.
-    - Whenever a action performed on any branch then entry is added on that branch's reflog.
-    - You can see the branch's reflog by 'git reflog <branch_name>' command.
-        - Branch reflog print each action of particular branch in '<commit_hash> <branch_name>@{n}: <action>: <action_description>' format.
-        - <action>: <action_description> = 'branch: Created from <branchxyz>'[your branch is created from branchxyz], 'commit: <new_commit_message>'[commit added on branch], 'commit (amend): <new_commit_message>'[amend in commit], 'reset: moving to HEAD~1'[reset latest commit in branch], 'merge branch1: Fast-forward'[merge branch1 in current branch and fast-forward merge is occuer], 'commit (merge): <merge commit message>'[merge anohter in current branch and merge commit is occuer]
-        - n = branch's entry latest entry=0 and increasing one by one n=1, n=2 etc...
-        - here reflog entry are added after operation is completed, so <commit hash> is hash of tip commit of the branch after the operation is done.
-
-= Use of Reflog
-in git one commit is not remove from the local memory anywhere
-After creation of one commit it's hash, changes and message is permnantly saved in memory and not removed anywhere.
-branch: A<-B<-C when you reset latest commit from the branch then branch:A<-B but C is not losted from the memory currently branch is contains A<-B but actually C is in memory which has child B.
-same if we amend in C branch: A<-B<-C' here C is not removed from the memory it is just hide and here C is connected with B as well.
-reflog is used here whenever you amend in commit or reset the commit, then find that privious commit's hash in reflog after that checkout to that commit by 'git checkout <hash>' now create branch from that detached HEAD, now your loosed commit is get back!!
-
-
+20].git stash
+= 'git stash' is used to temporarily save uncommitted changes (both staged and unstaged) in a clean state
+= git stash is helps to when you work on something else, Switch branches without committing incomplete work etc...
+= git stash temporarily remove the changes on working direactery or staging area and you can apply it after your action is done
+git stash = unchanged and staged changes are saved on stash.
+git stash pop
+git stash apply
+by default Git won't stash changes made to untracked or ignored files.
+git stash -u or git stash --include-untracked  is tell to stash untracked files also.
+git stash -a or git stash --all  for include untracked and ignore file also.
+you can run multiple stash, git stash list (show all stash, in folowwing order, 'stash@{number}: WIP on <branch for stash>: <commit which on top you create stash> our new homepage"  WIP = work in progress)
+git stash save "message",  message displays instaed of :<commit> our new homepage during stash list.
+git stash pop recent stash is reapply stash@{0},  you can choose git stash pop stash@{number} for reapply it.
+stash is used to save your changes for later.
+git stash show   summery for stash
+git stash show -p or git stash show --patch    full detail summery of stash
+git stash -p or git stash --patch    convert your changes in smaller hunk and iterate through each hunk and now you can decide weather you went to stash it ot not.
+sometimes git stash is diverged from your branch and it runs you into conflicts so here use     git stash branch <branch_name> stash@{1}  create new branch from commit which your create stash and apply this stash on that branch.
+git stash drop stash@{1}  for dropd your stash.
+git stash clear for drop all stash.
+link: https://chatgpt.com/c/6877f65e-0984-800f-b28d-6be8927799a8
 
 -   stash reflog: Shows all stash operations (when you stashed and applied)
 = git reflog mainly used for When you done something by mistack(bad rebase, delete branch, hard reset the commit) and now you went to reset the changes.

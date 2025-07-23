@@ -13,35 +13,6 @@ github certification exam: https://docs.github.com/en/get-started/showcase-your-
 
 ==============================================================================================================================================================================================================================
 
-git reflog
-= git reflog is shows a history of where you HEAD and branch have been.
-= reflog track each movment of HEAD.
-= in your repo when you do commit, checkout branch, remove any commit, perform rebase, merge, pull, amend in commit, create or pop stash. then one entry is add in reflog of that repo.
-= this entry look like. <HEAD's pointing commit before process> <HEAD's pointing commit after process> <author> <timestamp> <change: like commit, commit(amend) etc..>: <message of process
-= 'git reflog' is show history like that <HEAD'S pointing commit after that process> HEAD@{n} <change>: <message>,   here when you do new entry then it add at first with HEAD@{0} here we see entry like in HEAD@{0}, HEAD@{1} ...,   HEAD@{0} means now head where pointing, head 1 means where head is pointing before 0 and so on...
-= note that here HEAD@{n} gives you a nth entry's commit hash of reflog.(git checkout HEAD@{2}, is checkout to detached head HEAD@{2}'s commit)
-= note that each reflog entry connect with either branch or either detached head's commit. so for show branch specific entry 'git reflog show <branch_name>'
-= reflog are kept for 90 days.
-= Git keeps track of updates to the tip of branches using a mechanism called reference logs, or "reflogs."
-
-stash
-git stash = unchanged and staged changes are saved on stash.
-git stash pop
-git stash apply
-by default Git won't stash changes made to untracked or ignored files.
-git stash -u or git stash --include-untracked  is tell to stash untracked files also.
-git stash -a or git stash --all  for include untracked and ignore file also.
-you can run multiple stash, git stash list (show all stash, in folowwing order, 'stash@{number}: WIP on <branch for stash>: <commit which on top you create stash> our new homepage"  WIP = work in progress)
-git stash save "message",  message displays instaed of :<commit> our new homepage during stash list.
-git stash pop recent stash is reapply stash@{0},  you can choose git stash pop stash@{number} for reapply it.
-stash is used to save your changes for later.
-git stash show   summery for stash
-git stash show -p or git stash show --patch    full detail summery of stash
-git stash -p or git stash --patch    convert your changes in smaller hunk and iterate through each hunk and now you can decide weather you went to stash it ot not.
-sometimes git stash is diverged from your branch and it runs you into conflicts so here use     git stash branch <branch_name> stash@{1}  create new branch from commit which your create stash and apply this stash on that branch.
-git stash drop stash@{1}  for dropd your stash.
-git stash clear for drop all stash.
-
 reset
 git status: See differences between these trees.
 git diff: See changes between working directory and staging.
