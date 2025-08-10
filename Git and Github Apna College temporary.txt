@@ -1,10 +1,6 @@
 git configuration: https://chatgpt.com/c/681f2516-a918-800f-b061-81b4467c38d2
 
-rebase with another branch: https://docs.github.com/en/get-started/using-git/about-git-rebase
-
 git log --merge     produce a log with a list of commits that conflict between the mergin branches.
-git reset --mixed
-git reset
 git merge --abort
 
 SSH VS HTTP
@@ -12,21 +8,6 @@ SSH VS HTTP
 github certification exam: https://docs.github.com/en/get-started/showcase-your-expertise-with-github-certifications/registering-for-a-github-certifications-exam#about-identification-requirements
 
 ==============================================================================================================================================================================================================================
-
-reset
-git status: See differences between these trees.
-git diff: See changes between working directory and staging.
-git diff --cached: See changes between staging and last commit.
-git reset: Move files between the trees (e.g., from staging back to working).
-git checkout: Update working directory to match a commit.
-git reset <hash> is take your branch behind till hash of commit, git checkout <hash> is not affect branch but create detached HEAD but reset move branch not detached hash.
-git reset --soft <hash> or git reset --soft HEAD~1   => move your branch to this hash and remining code is place on staging area
-git reset --mixed <hash> or git reset --mixed HEAD~1   => move your branch to this has and remining code is place on working area
-git reset --hard <hash> or git reset --hard HEAD~1   => move your branch to this hash and remining code is remove completely
-by default git reset pass --mixed if we don't pass any argument.
-HEAD~1 = last commit's hash
-HEAD~2 = section last commmit's hash
-git reset --hard HEAD@{n}   reset till head@{n} current branch
 
 revert
 revert is safer undoing process,
@@ -48,14 +29,9 @@ remotes/origin/HEAD -> origin/main  ??
 
 git log  =
 git patch   =
-git squash
 SSH vs HTTP
 git configuration
 remove and restore
-
-git reflog
-git reset --hard HEAD@{1}
-git reflog show refs/stash       reflog for stash
 
 standard rebase = normal rebase
 git rebase -i <branch> or git rebase --interactive <branch>     is rebase interactively,
@@ -63,3 +39,118 @@ git rebase --d
 git rebase --p 
 git rebase --x 
 git rebase --onto <newbase> <oldbase>,,  git rebase --onto main featureA featureB
+
+
+
+
+Note: In GitHub, when you try to apply a commit (via merge or rebase) on top of a branch, and here if the any commit of the branch and the incoming commit have changes on the same line , and that branch’s commit is not an ancestor of the incoming commit then merge conflict is occuer.
+
+21].stash and stash reflog.
+= The 'git stash' command is temporarily remove your uncommitted changes (both staged and unstaged) from your working directory and save it in backend.
+= When you want to working on something else other than current working directory then 'git stash' comes into picture.
+= stashes are local only and doesn't affect remote repo.
+= How stash works
+    - 'git stash' is similar to make temporary commit that stored in locally and hidden from the any branch.
+    - like, branch: A<-B<-(staged + non-staged(modified changes)) and now run 'git stash'
+    - here stash is make one temporary commit which have B(as a parent) and changes = (staged + non-staged(modified changes)),
+    [In the stash commit, staged and non-staged changes are not stored separately; both are treated the same. However, during stash creation, Git gives priority to non-staged changes. For example, if you modify lines X+1 to X+5 and stage them, then further modify lines X+1 to X+3 (which remain unstaged), when you run git stash, then it store X+1 to X+5 line in which X+1 to X+3 are part of non-staged and X+4 to X+5 are part of staged.]
+    - after stash  you're free to make changes, create new commits, switch branches, and perform any other Git operations;
+    - now whenever you apply stash back on "any"[you can apply same stash to multiple branch] branch by 'git stash apply' then that stash temporary commit is apply on top of the current targeted branch.
+    [apply back commit on any branch then all changes of stash are apply in unstaged form no matter that stash contain staged or unstaged changes but all changes are applied in working directory as unstaged form.]
+    - While applying the stash, merge conflicts may occur if: Any commit in the current branch (that is not an ancestor of the stash commit) has changes that overlap with the changes in the stash.And this merge conflicts are displayed in working direactory and not affect any privious commit, you can now make changes according to your conviniance in this conflicts.
+-
+= stash reflog:
+    - you can create multiple stash for differant differant branch and each stash is stored in stash reflog.
+    - stash reflog is contain detail of each stash.
+    - stash reflog is stored in '.git/refs/stash' directory of '.git' folder of particular repo.
+    - you can see the stash reflog by 'git stash list' which is show each list in 'stash@{n}: WIP on <branch>: <commit hash> <commit message>'
+        n = stash number, latest stash number is 0 and increase as you go to privious.
+        branch = branch on which stash is created
+        commit hash = on top of commit you create stash that commit's hash
+        commit message = on top of commit you craete stash taht commit's message
+        WIP = Work In Progress.
+-
+= stash command:
+    'git stash' = stash the staged and non-staged(only modified changes) changes.[not stash untracked changes]
+    'git stash -u' or 'git stash --include-untracked' = stash all staged and non-staged(modified + untracked) changes.
+    'git stash pop' = apply and remove the stash from stash reflog.[it pop stash@{0}]
+    'git stage pop "stash@{n}"' = pop the nth stash.
+    'git stash apply' = apply the stash but not remove it from stash reflog[it apply stash@{0}]
+    'git stash apply "stash@{n}"' = apply the nth stash.
+        [apply is used when you need to apply same stash for multiple branch.]
+    'git stash save "message"' [each stash have one assositated message on it. 'WIP on <branch>' is default stash message for each stash, but you can make your own stash message during create of stash by this command, which is also shown on reflog.]
+    'git stash branch <branch_name> "stash@{n}"' = branch created from stash. [it's helped when your stash is cause of conflict] [This command is create new branch <baranch_name> in which have commit history same as  history of stash@{n}'s commit history(it is one commit) and top of that branch this stash is applied.]
+    'git stash drop "stash@{n}"' = drop/delete nth stash.
+    'git stash clear' = drop all stash and empty the stash reflog.
+    'git stash show' = display summery of stash@{0}
+    'git stash show "stash@{n}"' = display summery of stash@{n}
+    'git stash show -p' or 'git stash show --patch' = display detailed summery of stash@{0} [with changes of that stash, similar to show of the commit]
+    'git stash show -p "stash@{n}"' or 'git stash show --patch "stash@{n}"' = display detaild summery of stash@{n}
+-
+Stashes are actually encoded in your repository as commit objects.
+
+==============================================================================================================================================================================================================================
+
+22].git reset.
+= 'git reset' is used to modify your branch and reset the commit.
+= 'git reset' is similar to 'git checkout <commit hash>'.
+= branch: A<-B<-C<-D<-HEAD,  
+    'git checkout <B's hash>' = branch: A<-B<-C<-D and A<-B<-HEAD, [HEAD is detached]
+    'git reset <B's hash>' = branch: A<-B<-HEAD. [HEAD is attached][C and D are orphoned/lost][here if B is not the part of branch, then reset will make branch pointing to the B commit and change branch's whole commit history and make it identical to the commit history of the B].
+    'git reset <commit's hash> --hard' = reset the current branch to <commit's hash> and Then, Working Directory are reset to match that specified commit.[before run this command if any code are present in staging or working area then that are losse]
+    'git reset <commit's hash> --mixed' or 'git reset <commit's hash>' = reset the current branch to <commit's hash> but does not touch the Working Directory. All changes remain in the Working Directory as unstaged modifications.[This is default reset option][before run this command if any code present in staging area then that moved to the working area and staging area becomes null but code of working area is stay unaffected]
+    'git reset <commit's hash> --soft' = reset the current branch to <commit's hash> and Then, The changes from the commits that were reset are moved to the staging area.[before run this command if any code is present in staging area then reset changes are merge with that code and working area is stay unaffected]
+    'git reset --hard' or 'git reset HEAD --hard' = is don't change the branch because branch's tip is already pointed to the HEAD[HEAD is attached][clear the working and staging area]
+    'git reset --mixed' or 'git reset HEAD --mixed' or 'git reset' or 'git reset HEAD' = is don't change the branch[move the staging area changes into working area and staging area becomes null]
+    'git reset --soft' or 'git reset HEAD --soft' = not change the branch,[not affect the staging as well as working area]
+    reset is not for detached HEAD.
+    HEAD = HEAD pointed commit's hash.
+    HEAD~1 = HEAD's 1st parent's hash.
+    HEAD~2 = HEAD's 2nd parent's hash.
+    A<-B<-C<-D<-HEAD,             HEAD = D, HEAD~1 = C, HEAD~2 = B, ...
+    HEAD@{0} = HEAD reflog's 0th entry's commit's hash.
+    HEAD@{1} = HEAD reflog's 1st entry's commit's hash.
+    HEAD@{2} = HEAD reflog's 2nd entry's commit's hash.
+    you can use HEAD~n or HEAD@{n} with any git command instaed of direact use the hash.
+    but when use HEAD@{n} then use it with "" like git reset "HEAD@{n}"
+
+23].git squash.
+= Squash is the process of merging multiple commits into a single commit.
+= We can only squash one or more commits with their parent commits.
+    - A <- B <- C <- D [for squash commits B, C, and D into one, merge D into its parent C, then merge C'(C+D) into B, now final output B'=B+C+D]
+= You can't squash commits with each other which are not direactly connected[for upper example you can't squash direactly B and D without C.]
+= Squash commit [A<-B<-C<-D squash B, C and D]
+    - run 'git rebase -i HEAD~n'
+    - set the option 's' or 'squash' for commit C and D and pick for commit B and close the nano editor
+    - now it will merge D into C and C into B and open nano editor for write commit message for squashed commit and close the nano editor.
+    - after rebase process complete squash is done and B, C and D are merge into one commit.
+= What Does Squash Actually Do?
+    - suppose we squash B, C and D into one commit.
+    - The codebase has a one state before commit B and a final state after commit D.
+    - Here diff between before commit B and after commit D is set as changes for squashed final commit.
+
+24].git revert
+= 'git revert' will create inverse changes of the commit.
+= 'git revert HEAD' will revert of HEAD.
+= 'git revert HEAD~1' or 'git revert HEAD@{1}' or 'git revert <hash>' will revert the particular commit.
+= here if you went to revert the changes and that changes are not as itis then it will create a merge conflicts.
+    like commit A: add line X+1 to X+5, remove line Y+1 to Y+5 and change line Z+1 to Z+5 by Z+1 to Z+3., after that add new commit B and C.
+    now revert A, 
+        here if X+1 to X+5 are as itis then no problem it is just removed in revert commit.otherwise it leads to an merge conflict
+        here if Y+1 to Y+5 are as itis removed and not add extra line between them then no problem it is just added in revert commit. otherwise it leads to an merge conflict
+        here if Z+1 to Z+3 are as itis then no problem it is just removed and old 5 line are added in revert commit. otherwise it is leads to an merge conflict.
+        in merge conflict you see the current changes and incoming changes.[current changes = changes that are currently exists, incoming changes=that revert commit try to apply]
+        like X+3 is changed then current change = X+1 to X+5[X+3 is changed], incoming change=remove all 5 line and empty line as rremoved
+        like Y+1 line is added current change = Y+1 line, incoming change=Y+1 to Y+5
+        like Z+2 changed then current change = Z+1 to Z+3 with Z+2 is changed incoming change = remove Z+1 to Z+3 and add Z+1 to Z+5
+=
+= 'git revert <commit-hash-1> <commit-hash-2> <commit-hash-3>' revert one by one each commit
+    during revert merge conflict you have 3 option
+    git revert --abort = abort the all revert commit.
+    git revert --skip = not create revert for this commit.
+    git revert --continue = manually resolve the conflict and then git add . and then this will create revert commit for you and continue the revert process.
+=
+common option with revert.
+    -e or --edit = default option, during revert it will open the nano editor which have default text for revert[revert this hash something], now write the commit message and then close the editor will create revert commit for you.
+    --no-edit. => during revert not open the nano editor, for this default commit message   Revert "message of the original commit"   This reverts commit <hash of original commit>      as take commit message.
+    -n or --no-commit => not make commit but revert changes added on staging area.
