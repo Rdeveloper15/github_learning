@@ -416,6 +416,7 @@ ii. three-way merge: When both branches are diverged from eachother (scenario 3 
 = 1.working directory(working Tree): This is the actual files and folders you see and edit in your project directory, Example: If you open a file in VS Code and edit it — you are working in the working directory.
 = 2.staging index(cache/staging area): This is an intermediate area where you put changes you want to commit. Example: After git add file.txt, that file.txt is placed in the staging area.
 = 3.commit history (HEAD/Local database): This is the actual Git database that stores your committed history. Example: After git commit, the current state in the staging area becomes a new snapshot in the repository.
+= This 'Three tree architecture' of git is worked based on DSA's tree concept.
 
 18].HEAD
 HEAD: HEAD is a pointer which is pointing to the tip(latest commit) of the current branch.
@@ -516,46 +517,72 @@ Insert new commit between the history of an existing branch:
 = Use of Reflog
     - Reflog is used when you amend a commit or reset a commit. You can find the previous commit’s hash in the reflog(reflog almost contain each commit's hash), then checkout to that commit using git checkout <hash>. After that, create a branch from the detached HEAD — your lost commit will be recovered!.
 
-==============================================================================================================================================================================================================================
+Note: In GitHub, when you try to apply a commit (via merge or rebase) on top of a branch, and here if the any commit of the branch and the incoming commit have changes on the same line , and that branch’s commit is not an ancestor of the incoming commit then merge conflict is occuer.
 
-Note: In GitHub, when you try to apply a commit (via merge, rebase, or cherry-pick) on top of a branch, and here if the any commit of the branch and the incoming commit have changes on the same line , and that branch’s commit is not an ancestor of the incoming commit then merge conflict is occuer.
-
-21].git stash
-= The 'git stash' command is temporarily remove your uncommitted changes (both staged and unstaged) from your working directory and save in backend.
+21].stash and stash reflog.
+= The 'git stash' command is temporarily remove your uncommitted changes (both staged and unstaged) from your working directory and save it in backend.
 = When you want to working on something else other than current working directory then 'git stash' comes into picture.
-= stashes are local only and doesn't affect remote repo.
+= Stashes are local only and doesn't affect remote repo.
+= Stashes are actually encoded in your repository as commit objects.
 = How stash works
     - 'git stash' is similar to make temporary commit that stored in locally and hidden from the any branch.
     - like, branch: A<-B<-(staged + non-staged(modified changes)) and now run 'git stash'
-    - here stash is make one temporary commit which have B(as a child) and changes = (staged + non-staged(modified changes)),
+    - here stash is make one temporary commit which have B(as a parent) and changes = (staged + non-staged(modified changes)),
     [In the stash commit, staged and non-staged changes are not stored separately; both are treated the same. However, during stash creation, Git gives priority to non-staged changes. For example, if you modify lines X+1 to X+5 and stage them, then further modify lines X+1 to X+3 (which remain unstaged), when you run git stash, then it store X+1 to X+5 line in which X+1 to X+3 are part of non-staged and X+4 to X+5 are part of staged.]
     - after stash  you're free to make changes, create new commits, switch branches, and perform any other Git operations;
     - now whenever you apply stash back on "any"[you can apply same stash to multiple branch] branch by 'git stash apply' then that stash temporary commit is apply on top of the current targeted branch.
-    [apply back commit on any branch then all changes of stash are apply in unstaged form no matter that stash contain staged or unstaged changes but all changes are applied in working directory as unstaged form.]    
-    - While applying the stash, merge conflicts may occur if: Any commit in the current branch (that is not an ancestor of the stash commit) has changes that overlap with the changes in the stash.And this merge conflicts are in working direactory and not affect any privious commit, you can now make changes according to your conviniance in this conflicts.
-
+    [apply back commit on any branch then all changes of stash are apply in unstaged form no matter that stash contain staged or unstaged changes but all changes are applied in working directory as unstaged form.]
+    - While applying the stash, merge conflicts may occur if: Any commit in the current branch (that is not an ancestor of the stash commit) has changes that overlap with the changes in the stash.And this merge conflicts are displayed in working direactory and not affect any privious commit, you can now make changes according to your conviniance in this conflicts.
+-
 = stash reflog:
- - stash reflog is contain detail of each stash.
- - you can create multiple stash as well for differant differant branch.
- - stash reflog is stored in '.git/refs/stash' directory of '.git' file of particular repo.
- - you can see the stash reflog by 'git stash list' which is show each list in 'stash@{n}: WIP on <branch for stash>: <commit has which on top you craete stash> <commit message>'
-    n = number one by one increase.
-    WIP = Work In Progress.
-
+    - you can create multiple stash for differant differant branch and each stash is stored in stash reflog.
+    - stash reflog is contain detail of each stash.
+    - stash reflog is stored in '.git/refs/stash' directory of '.git' folder of particular repo.
+    - you can see the stash reflog by 'git stash list' which is show each list in 'stash@{n}: WIP on <branch>: <commit hash> <commit message>'
+        n = stash number, latest stash number is 0 and increase as you go to privious.
+        WIP = Work In Progress.
+        branch = branch on which stash is created
+        commit hash = on top of commit you create stash that commit's hash
+        commit message = on top of commit you create stash that commit's message
+-
 = stash commands:
-'git stash' = stash the staged and non-staged(only modified changes) changes.
-by default Git won't stash changes made to untracked files.
-'git stash -u' or 'git stash --include-untracked' stash all staged and non-staged(modified + untracked) changes.
-= 'git stash pop' is apply and remove the stash from your system
-= 'git stash apply' is appply the stash but not remove it from stash reflog
-    apply is used when you need to apply same stash for multiple branch.
-apply and pop is apply the stash{0}
-= each stash have one assositated message on it. 'WIP on <branch for stash>' but you can make your own stash message during create of stash which is also shown on reflog.
-    'git stash save "message"'
-= you can choose the stash apply by 'git stash pop 'stash@{n}'' or 'git stash apply 'stash@{n}''    
-'git stash branch branch_name 'stash@{n}''   branch created from stash.  it's helped when your stash is cause of conflict., This command is create new branch baranch_name in which have commit history same as  history of stash@{n}'s commit history(it is one commit) and top of that branch this stash is applied.
-Stashes are actually encoded in your repository as commit objects. The special ref at .git/refs/stash points to your most recently created stash, and previously created stashes are referenced by the stash ref's reflog. This is why you refer to stashes by stash@{n}: you're actually referring to the nth reflog entry for the stash ref. Since a stash is just a commit, you can inspect it with git log:
-git stash drop 'stash@{1}'  for dropd your stash.
-git stash clear for drop all stash.
-git stash show   summery for stash  same for 'git stash show 'stash@{n}' and git stash show -p 'stash@{n}'
-git stash show -p or git stash show --patch    full detail summery of stash like commit what changes and whatnot 
+    'git stash' = stash the staged and non-staged(only modified changes) changes.[not stash untracked changes]
+    'git stash -u' or 'git stash --include-untracked' = stash all staged and non-staged(modified + untracked) changes.
+    'git stash pop' = apply and remove the stash from stash reflog.[it pop stash@{0}]
+    'git stage pop "stash@{n}"' = pop the nth stash.
+    'git stash apply' = apply the stash but not remove it from stash reflog[it apply stash@{0}]
+    'git stash apply "stash@{n}"' = apply the nth stash.
+        [apply is used when you need to apply same stash for multiple branch.]
+    'git stash save "message"' [each stash have one assositated message on it. 'WIP on <branch>' is default stash message for each stash, but you can make your own stash message during create of stash by this command, which is also shown on reflog.]
+    'git stash branch <branch_name> "stash@{n}"' = branch created from stash. [it's helped when your stash is cause of conflict] [This command is create new branch <baranch_name> in which have commit history same as  history of stash@{n}'s commit history and top of that branch this stash is applied.]
+    'git stash drop "stash@{n}"' = drop/delete nth stash.
+    'git stash clear' = drop all stash and empty the stash reflog.
+    'git stash show' = display summery of stash@{0}
+    'git stash show "stash@{n}"' = display summery of stash@{n}
+    'git stash show -p' or 'git stash show --patch' = display detailed summery of stash@{0} [with changes of that stash, similar to show of the commit]
+    'git stash show -p "stash@{n}"' or 'git stash show --patch "stash@{n}"' = display detaild summery of stash@{n}
+
+22].git reset.
+= 'git reset' is used to modify your branch and reset the commit.
+= 'git reset' is similar to 'git checkout <commit hash>'.
+= branch: A<-B<-C<-D<-HEAD,
+    'git checkout <B's hash>' = branch: A<-B<-C<-D and A<-B<-HEAD, [HEAD is detached]
+    'git reset <B's hash>' = branch: A<-B<-HEAD. [HEAD is attached][C and D are orphoned/lost][here if B is not the part of branch, then reset will make branch pointing to the B commit and change branch's whole commit history and make it identical to the commit history of the B].
+    'git reset <commit's hash> --hard' = reset the current branch to <commit's hash> and Then, Working Directory are reset to match that specified commit.[before run this command if any code are present in staging or working area then that are loose]
+    'git reset <commit's hash> --mixed' or 'git reset <commit's hash>' = reset the current branch to <commit's hash> but does not touch the Working Directory. All changes remain in the Working Directory as unstaged modifications.[This is default reset option][before run this command if any code present in staging area then that moved to the working area and staging area becomes null but code of working area is stay unaffected]
+    'git reset <commit's hash> --soft' = reset the current branch to <commit's hash> and Then, The changes from the commits that were reset are moved to the staging area.[before run this command if any code is present in staging area then reset changes are merge with that code and working area is stay unaffected]
+    'git reset --hard' or 'git reset HEAD --hard' = is don't change the branch because branch's tip is already pointed to the HEAD[HEAD is attached][clear the working and staging area]
+    'git reset --mixed' or 'git reset HEAD --mixed' or 'git reset' or 'git reset HEAD' = is don't change the branch[move the staging area changes into working area and staging area becomes null]
+    'git reset --soft' or 'git reset HEAD --soft' = not change the branch,[not affect the staging as well as working area]
+    reset is not for detached HEAD.
+    HEAD = HEAD pointed commit's hash.
+    HEAD~1 = HEAD's 1st parent's hash.
+    HEAD~2 = HEAD's 2nd parent's hash.
+    A<-B<-C<-D<-HEAD,             HEAD = D, HEAD~1 = C, HEAD~2 = B, ...
+    HEAD@{0} = HEAD reflog's 0th entry's commit's hash.
+    HEAD@{1} = HEAD reflog's 1st entry's commit's hash.
+    HEAD@{2} = HEAD reflog's 2nd entry's commit's hash.
+    you can use HEAD~n or HEAD@{n} with any git command instaed of direact use the hash.
+    but when use HEAD@{n} then use it with "" like git reset "HEAD@{n}"
+
+==============================================================================================================================================================================================================================

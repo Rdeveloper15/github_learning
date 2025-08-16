@@ -1,20 +1,6 @@
 
 ppt:-  https://docs.google.com/presentation/d/1_IqN_a27BFr2ItUmPvYJacN-KVcQi_GUK5YeLmDZJNU/edit#slide=id.g24167233346_0_18
 
-steps to amend an older commit
-1. git rebase -i HEAD~N  (N  = number of commits you want to go back from the latest commit (HEAD).)
-2. Find the commit you want to amend and change pick to edit.(In Nano editor: Press CTRL + O (Save), Enter (Confirm), then CTRL + X (Exit).)
-3. Amend the Commit(git add ., git commit --amend)
-4. git rebase --skip (move your head to latest commit)
-
-steps to remove amended changes from commit
-1. git reflog (here you can found hash of amended commit and also original commit)
-2. copy hash of original commit
-3. git rebase -i <paste hash here> (In Nano editor: Press CTRL + O (Save), Enter (Confirm), then CTRL + X (Exit).)
-4. git rebase --continue (solve merge conflict which is occuer between amended commit and original commit)
-5. git add .
-6. git rebase --continue
-
 0].editors
 - nano editor
 - vim editor
@@ -35,17 +21,17 @@ git show (last commit with display changes)
 git show <commit hash> (commit with display changes)
 git blame <file name> (Displays line-by-line history of a file, showing which commit and author last modified each line.)
 
-5].git add 
+2].git add 
 git rm --cached raj.txt (for make raj.txt to staged to untracked(deleted))
 
-8].git restore
+3].git restore
 if you accidently delete raj.txt 
 git restore raj.txt (for restore deleted file)(if you don't deleted but modified then it get back to at original one)
 git restore . (restore all deleted file from privious commit)
 git restore --staged myfile.txt (make staged file to unstaged)
 git restore --staged .
 
-13].ubantu command
+4].ubantu command
 mkdir - make direactory
 touch - make file
 mv - move file, mv filename direactoryname
@@ -60,7 +46,8 @@ history
 vim TODO (now TODO file open in terminal 'i' type so you can edit that file after editing, after editing ESC, then :wq for save file, :q for don't save)
 
 
-
-
 after complete github
 clean your main github repo and push all important local code on github.
+
+
+https://www.atlassian.com/git/tutorials/undoing-changes/git-rm
