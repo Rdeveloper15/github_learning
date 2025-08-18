@@ -585,4 +585,19 @@ Note: In GitHub, when you try to apply a commit (via merge or rebase) on top of 
     you can use HEAD~n or HEAD@{n} with any git command instaed of direact use the hash.
     but when use HEAD@{n} then use it with "" like git reset "HEAD@{n}"
 
+23].git squash.
+= Squash is the process of merging multiple commits into a single commit.
+= We can only squash one or more commits with their parent commits.
+    - A <- B <- C <- D [for squash commits B, C, and D into one, merge D into its parent C, then merge C'(C+D) into B, now final output B'=B+C+D]
+= You can't squash commits with each other which are not direactly connected[for upper example you can't squash direactly B and D without C.]
+= Squash commit [A<-B<-C<-D squash B, C and D]
+    - run 'git rebase -i HEAD~n'
+    - set the option 's' or 'squash' for commit C and D and pick for commit B[without set pick command for B squash is not working] and close the nano editor
+    - now it will merge D into C and C into B and open nano editor for write commit message for squashed commit and close the nano editor.
+    - after rebase process complete squash is done and B, C and D are merge into one commit.
+= What Does Squash Actually Do?
+    - suppose we squash B, C and D into one commit.
+    - The codebase has a one state before commit B and a final state after commit D.
+    - Here diff between before commit B and after commit D is set as changes for squashed final commit.
+
 ==============================================================================================================================================================================================================================
