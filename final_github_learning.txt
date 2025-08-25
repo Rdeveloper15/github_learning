@@ -600,4 +600,36 @@ Note: In GitHub, when you try to apply a commit (via merge or rebase) on top of 
     - The codebase has a one state before commit B and a final state after commit D.
     - Here diff between before commit B and after commit D is set as changes for squashed final commit.
 
+24].git revert
+= git revert creates a new commit on top of the branch that inverse the changes introduced by a specific commit.
+= 'git revert HEAD' will create new commit which inverse the changes of HEAD commit.
+= 'git revert HEAD~1' or 'git revert "HEAD@{1}"' or 'git revert <hash>' will revert the particular commit.
+= When you run 'git revert <hash>' then it open the nano editor for write commit message for revert commit, after write message close the nano editor which is finally create new revert commit.
+= HOW REVERT WORKS AND WHEN MERGE CONFLICTS ARE OCCUER IN REVERT
+    - here if you went to revert the changes and that changes are not as itis in current state of branch then it will leads to a merge conflicts.
+    - like commit A: add line X+1 to X+5, remove line Y+1 to Y+5 and change line Z+1 to Z+5 by Z+1 to Z+3., after that add new commit B and C.
+    - now revert A,
+        here if X+1 to X+5 are as itis then no problem it is just removed in revert commit.otherwise it leads to an merge conflict
+        here if Y+1 to Y+5 are as itis removed and not add extra line between them then no problem it is just added in revert commit. otherwise it leads to an merge conflict
+        here if Z+1 to Z+3 are as itis then no problem it is just removed and old 5 line are added in revert commit. otherwise it is leads to an merge conflict.
+        in merge conflict you see the current changes and incoming changes.[current changes = changes that are exists in latest state of branch, incoming changes=that revert commit try to apply]
+        like X+3 is changed then current change = X+1 to X+5[X+3 is changed], incoming change=remove all 5 lines.
+        like Y+1 line is added current change = Y+1 line, incoming change=privious Y+1 to Y+5
+        like Z+2 changed then current change = Z+1 to Z+3 with Z+2 is changed incoming change = remove Z+1 to Z+3 and add privious Z+1 to Z+5
+= WHAT TO DO WHEN MERGE CONFLICTS ARE OCCUER.
+    = here if merge conflicts are occuer then you have 3 option,
+    1.abort the whole reverte process by 'git reverte --abort'
+    2.skip the commit by 'git revert --skip'.[similar to abort while revert only one commit.]
+    3.make changes, staged them by 'git add .' then continue the revert by 'git revert --continue'[simmilar to merge commit during conflicts]
+= REVERT MULTIPLE COMMITS AT ONES.
+    - 'git revert <commit-hash-1> <commit-hash-2> <commit-hash-3>' revert one by one each commit, open nano editor for write commit message for each commit one by one.
+    - during revert if merge conflict is occuer for any of the commit then revert process is stopped and for that commit you have 3 option
+        1.'git revert --abort' = abort the all revert commit.
+        2.'git revert --skip' = skip that conflicting commit.
+        3.'git revert --continue' = manually resolve the conflict and then staged the changes by 'git add .' and then continue revert process by this command.
+= COMMON OPTIONS FOR REVERT.
+    -e or --edit = default option, during revert it will open the nano editor for write commit message. now write the commit message and then close the editor will create revert commit for you.
+    --no-edit. => during revert not open the nano editor, but it create the revert commit with default commit message   'Revert "message of the original commit"   This reverts commit <hash of original commit>'.
+    -n or --no-commit => not make commit but apply inverse changes of the specific commit into staging area.
+
 ==============================================================================================================================================================================================================================

@@ -1,53 +1,196 @@
 
 ppt:-  https://docs.google.com/presentation/d/1_IqN_a27BFr2ItUmPvYJacN-KVcQi_GUK5YeLmDZJNU/edit#slide=id.g24167233346_0_18
 
-0].editors
-- nano editor
-- vim editor
-- vs code 
-git config --global core.editor "code --wait"  (set your editor for interaction(like for commit message by git commit command))
-
-1].differance between git log, show, blame
-https://chatgpt.com/c/67cffc78-24fc-8004-be6b-1066b9a53ced
-git log (detail of all commit)
-git log --oneline (all commit in one line)
-git log -p (all commit with display changes in file)
-git log --oneline --graph --decorate --all (graphical representation of commit history.)
-git log --author="rspa-odoo"  (to only show the commit created by a specific author)
-git log --since="2025-03-04"  (to only show the commit after march 4)
-git log <file name>  (commits of this file)
-git log <branch name>  (commits of this branch)
-git show (last commit with display changes)
-git show <commit hash> (commit with display changes)
-git blame <file name> (Displays line-by-line history of a file, showing which commit and author last modified each line.)
-
-2].git add 
-git rm --cached raj.txt (for make raj.txt to staged to untracked(deleted))
-
-3].git restore
-if you accidently delete raj.txt 
-git restore raj.txt (for restore deleted file)(if you don't deleted but modified then it get back to at original one)
-git restore . (restore all deleted file from privious commit)
-git restore --staged myfile.txt (make staged file to unstaged)
-git restore --staged .
-
-4].ubantu command
-mkdir - make direactory
-touch - make file
-mv - move file, mv filename direactoryname
-cp - copy file, cp filename direactoryname
-cd - change direactory
-pwd - print working direactory(current working directory)
-ls - list all files
-ls -R (list all direactory with sub direactory with recursive)
-touch .raj  (.raj is hidden file not visible by any one)
-ls -a (list hidden file also)
-history
-vim TODO (now TODO file open in terminal 'i' type so you can edit that file after editing, after editing ESC, then :wq for save file, :q for don't save)
-
-
 after complete github
 clean your main github repo and push all important local code on github.
 
+= remining topics
 
-https://www.atlassian.com/git/tutorials/undoing-changes/git-rm
+standard rebase = normal rebase
+git rebase -i <branch> or git rebase --interactive <branch>     is rebase interactively,
+git rebase --d 
+git rebase --p 
+git rebase --x 
+git rebase --onto <newbase> <oldbase>,,  git rebase --onto main featureA featureB
+
+git patch   =
+SSH vs HTTP
+remove and restore
+
+if you went to change root(first) commit git rebase -i --root
+
+git log --merge     produce a log with a list of commits that conflict between the mergin branches.
+git merge --abort
+
+github certification exam: https://docs.github.com/en/get-started/showcase-your-expertise-with-github-certifications/registering-for-a-github-certifications-exam#about-identification-requirements
+
+==============================================================================================================================================================================================================================
+
+
+25].git log, shortlog, show, blame
+- 'git log' displays the commit history of the current branch (shows all commits and their descendants of the current branch).
+- 'git log HEAD~n' or 'git log "HEAD@{n}"' or 'git log <hash>' displays the commit history starting from a specific commit (including its direct and indirect descendants).
+- The output of 'git log' is shown in this format:
+    - Commit hash
+    - Merge: first parent, second parent (only shown if the commit is a merge commit)
+    - Author: username and email of the commit author (the person who made the commit)
+    - Date: day, date, and time of the commit
+    - Commit message
+- When the HEAD commit appears in git log, it may show additional labels beside it:
+    (HEAD -> branch) → if HEAD is attached and is the tip of the given branch
+    (HEAD, branch1, branch2) → if HEAD is detached but it is also the tip of branch1 and branch2
+    (HEAD) → if HEAD is in a detached state
+- Formatting options of 'git log'
+    '--oneline' = displays the log where each line of the commit shows the whole commit, in the structure "<commit hash> (HEAD / HEAD, branch / HEAD->branch if the commit is HEAD commit) <commit message title>" [The commit message title is the first line of the commit message.]
+    '--stat' = displays each commit along with a summary of changes for every modified file.For each file, it shows the number of insertions (+) and deletions (-).like:  index.html | 11 +++++++++--
+    '-p' or '--patch' = displays each commit with the actual changes made in every file.--stat only shows how many lines were changed (summary).-p shows which specific lines were changed and what the exact changes are (additions and deletions).
+    '--merges' = similar to normal 'git log' but it only displays the merge commits.
+    '--no-merges' = similar to 'git log' but it only displays non merge commits.
+    '--graph' = it is show the commit history as graph. it is generally used with --oneline.
+            *   c8e3f57 (HEAD -> main) Merge branch 'feature'
+            |\  
+            | *  b2f1c93 (feature) Add feature logic
+            | *  a1e2d45 Refactor feature code
+            * |  3e1c2a1 Update README
+            |/  
+            *  9dcbba2 Initial commit
+            c8e3f57 is a merge commit — it merged the feature branch into main.
+            The commits b2f1c93 and a1e2d45 were part of the feature branch and 3e1c2a1 is part of the main branch.
+            From 9dcbba2 both branches splitted.
+    '--author="rspa-odoo"' = similat to normal 'git log' but it only displays the commit which is authorized by particular user.
+    '--since="2025-03-04"' = similar to normal 'git log' but it only displays the commit which are made after 4th march 2025.
+    'git log <branch>' = display commit history of the particular branch starting from tip of that branch.
+=
+- 'git shortlog' = similar to 'git log' but it displays commits grouped by author. For each author, it shows the total number of commits they made and the title (first line) of each commit.
+    Alice[username] (3):
+          Add login feature [commit message]
+          Fix typo in login page
+          Update documentation
+
+    Bob (2):
+          Improve checkout flow
+          Add payment gateway support
+- 'git shortlog -n' = similar to 'git shortlog' sorts the log by the number of commits, showing authors with the highest commit count at top.[by default shortlog is sorts the log according to alphabetical order of Author's username]
+=
+- 'git show' = display the HEAD commit with it's changes[in which file what insertions and deletions are performed].
+- 'git show HEAD~n' or 'git show "HEAD@{n}" or 'git show <hash>' = run the 'git show' for specific commit.['git show' is similar to 'git log --patch' but it displays all commit with changes where the 'git show' is display the changes for specific commit]
+=
+- 'git blame' is working with specific file.
+- 'git blame index.html' is lists each line of index.html one by one, with this structure:
+    "<hash of the latest commit affecting this line> (<author’s username of the commit> <timestamp of the commit> <line number>) <content of the line>"
+- 'git blame -L 2,5 index.html' = displays blame information only for lines 2 to 5.
+- 'git blame -e index.html' = similar to normal 'git blame', but it shows the author’s email instead of the author’s username.
+
+26].git config
+- The 'git config' command is used to define and manage Git configuration settings.Using 'git config' command you can configure many settings of the particular git repo.These configured settings are used to manage and maintain your your repo's code easily.
+- There are total 3 configuration levels on which 'git config' command apply the configuration settings.
+    --local, 
+        If no level is specified, Git applies the configuration at the local level by default.
+        Local configurations apply only to the specific repository where the command is executed.
+        These settings are stored in the repository’s .git/config file.
+        The command must be executed inside the repository for local configuration.
+    --global,
+        The global level is used to configure Git settings for the current user of system across all repositories.[these configurations are applied on all repositories which are controlled by this user(machine's user not git user).]
+        This is useful when multiple users exist on the same machine and you want to define settings, specific to your current user.
+        Global configurations are stored in: Linux / macOS: "~/.gitconfig" and for Windows: "C:\Users\<YourUsername>\.gitconfig"
+    --system,
+        The system level is used to configure Git settings for all repositories of your machine irrespect to the user.
+        System configuration are stored in: Linux / macOS: "/etc/gitconfig" and for Windows: "C:\ProgramData\Git\config"
+    When resolving configuration values, Git follows this priority order (highest to lowest):Local, Global, System. It means same configuration setting is defined in all levels then Local's setting is applied.[If local's setting is not defined then global's setting is applied].
+- Configurations commands.[Here in each command '--global' is used but you can use '--local' or '--system' instead of it]
+    1.user's commands
+        'git config --global user.name "username of github user"'  =  connect username of the particular github account with your system. 
+        'git config --global user.email "email of github user"'  =  connect useremail of the particular github account with your system.
+        'git config --global --unset user.name'  =  unset username from your system.
+        'git config --global --unset user.email'  =  unset useremail from your system.
+        When you make commit from your system then this commit is created with this user as author.
+    2.default editor's commands
+        'git config --global core.editor "code --wait"'  =  set vs code as default editor for user input
+        'git config --global core.editor "nano"'  =  set nano editor as default editor for user input
+        During middle of some github process sometimes git needs to take input from user[like: during merge conflict] so we need to one default editor which is take input from user during middle process.
+    3.color's commands
+        - Git allows you to configure colors for various commands and their output to improve readability.
+        - The general format is: color.<property>.<slot> <color-value>
+            properly  →  The Git command whose output will be colorized[like branch, diff, status etc...]
+            slot  →  Each property has multiple types of output[like for branch, local branch, remote tracking branch etc..., for diff added diff, removed diff etc..., for status modified files, staged files, untracked files etc...]
+            color-value  →  [normal / black / red / green / yellow / blue / magenta / cyan / white][each propety's each slot have one it's default color like, for branch property remote slot have red at its default color, so "normal" color value indicate that property's slot's default color.][color value is also can be specified in hexadecimal code like #ff0000]
+            1.properly: branch [Controls the coloring of output for the 'git branch' command.]
+                Available slots for branch property.
+                    1.current: the currently checked-out local branch.
+                    2.local: other local branches.
+                    3.remote: remote tracking branches ("origin/feature-x")
+                    4.upstream: remote tracking branch which is upstream of the current local branch.
+                    5.plain: any other branches not covered above.
+                'git config --global color.branch.current blue' This configuration makes the current branch display in blue when you run 'git branch'.
+                'git config --global color.branch false' make all output related to 'git branch' command colorless[white].
+                'git config --global color.branch true' make all output related to 'git branch' command colorfull[according to configuration you set using color.branch.<slot> command].[by default color.branch is already true]
+            2.properly: diff [Controls the coloring of output for the 'git diff' command.]
+                Available slots for diff property.
+                    1.old: removed lines of the diff.
+                    2.new: added lines of the diff.
+                    3.whitespace: sets a color for any whitespace errors in a diff.
+                'git config --global color.diff.old blue' This configuration makes the removed lines display in blue when you run 'git diff'.
+                'git config --global color.diff false' make all output related to 'git diff' command colorless[white].
+                'git config --global color.diff true' make all output related to 'git diff' command colorfull[according to configuration you set using color.diff.<slot> command].[by default color.diff is already true]
+            3.properly: status [Controls the coloring of output for the 'git status' command.]
+                Available slots for status property.
+                    1.header: header description[like: on branch main etc...] shown in status.
+                    2.branch: branch name in header[on branch "branch_name"].
+                    3.added: list of staged files shown in status.
+                    4.changed: list of modified files shown in status.
+                    5.untracked: list of untracked files shown in status.
+                'git config --global color.status.added blue' This configuration makes the list of staged files display in blue when you run 'git status'.
+                'git config --global color.status false' make all output related to 'git status' command colorless[white].
+                'git config --global color.status true' make all output related to 'git status' command colorfull[according to configuration you set using color.status.<slot> command].[by default color.status is already true]
+        - In github some commands redirect terminal output in file and that redirected output is also visible in colors[like merge conflicts redirected into file, incoming changes in red and existing changes in green].
+            'git config --global color.ui false' make terminal output and redirected file output colorlesss[white].
+            'git config --global color.ui auto' default value, make terminal output colorfull[according to configuration you set using color.<property>.<slot> command.] but redirected file output colorless.
+            'git config --global color.ui always' make terminal output and redirected file output colorfull.
+    4.aliase command
+        Git allows you to create aliases (shortcuts) for any git commands.
+        General structure of any Git commands: 'git <command>'
+        Strucuture of create alias for any git command: 'git config --global alias.<alias_name> <git command>'
+        e.g.: alias for "commit" command: 'git config --global alias.cmt commit' now you can use 'git cmt --amend' instead of 'git commit --amend'
+        e.g.2: alias for "commit --amend" command: 'git config --global alias.cmtamd "commit --amend"'[multi word command written in ""] now you can use 'git cmtamd' instead of 'git commit --amend'
+    5.'git config --list' displays all configuration of your current repo.[in this format  user.name=rspa-odoo color.branch.current=green]
+- Git stores configuration data in a key-value format. Keys can have sub-keys, forming a hierarchy. For example:
+    {
+        "user": {
+            "name": "",
+            "email": ""
+        }
+        "color": {
+            "ui": "",
+            "status": {},
+            "branch": {},
+            ...
+        }
+    }
+
+27].git cherry-pick
+= The 'git cherry-pick' command is used to apply specific existing commits of other branch onto the top of current branch.
+= If other branches have multiple commits which are not existed into your current branch, and you need to add specific commit from that commits into your current branch then rebasing or merging is not working but cherry-pick is used instead because cherry-pick is add one specific commit.
+= for e.g. we have 2 branch
+    a - b - c - d   Main
+         \
+           e - f - g Feature
+    'git checkout main'.
+    'git cherry-pick <commit f's hash>'
+    now,
+        a - b - c - d - f   Main
+         \
+           e - f - g Feature
+= Actually cherry-pick is not add existing commit f into Main branch but it create brand new commit on top of Main branch which have changes similar to commit f.current git user is assigned as author for new commit f [note that existing commit f's author is not changed].
+= Options for 'git cherry-pick'
+    --edit: open nano editor for write commit message for cherrypicked commit.[without this option cherrypick command take existing commit's[Feature's f commit] message as new commit's[Main's f commit] message]
+    --no-commit: this option is not make commit but it apply changes of existing commit on top of current branch in staging area.
+    --signoff: this option is add signature line in new commit message during cherrypick.[signature line like: "Signed-off-by: rspa-odoo <rspa@odoo.com>"]
+= You can cherry-pick multiple commits on current branch by 'git cherry-pick <hash1> <hash2> <hash3>' command.[here if all commit's are totally disconnected with each other then also this command is working fine][this command is apply commit on current branch in same order in which their hash is mentioned]
+= During cherry-pick of one commit on current branch there are possiblity to occuer merge conflicts[e.g.: The commit being cherry-picked is try to removes a line that no longer exists in the current branch. or The commit being cherry-picked is try to modifies a line, but that line has already been changed differently in the current branch.]
+    In these cases, Git pauses the cherry-pick process and displays the merge conflicts and give 3 options to resolve these conflicts.
+    'git cherry-pick --abort' = abort the whole cherry-pick process.
+    'git cherry-pick --continue' = make changes than staged them by 'git add .' now continue to making new commit with modified code by this command.[open the nano editor for write commit message]
+    'git cherry-pick --skip' = skip the current commit and go to next commit.[usefull when you cherrypick multiple commit at a time]
+= Note that if you use '--no-commit' option with cherry-pick and if merge confclits are occuer then these conflicts are just displayed in working directory and in this secenario conflict resolving command(--abort, --skip and --continue) are useless.
+
+==============================================================================================================================================================================================================================
