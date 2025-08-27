@@ -632,4 +632,58 @@ Note: In GitHub, when you try to apply a commit (via merge or rebase) on top of 
     --no-edit. => during revert not open the nano editor, but it create the revert commit with default commit message   'Revert "message of the original commit"   This reverts commit <hash of original commit>'.
     -n or --no-commit => not make commit but apply inverse changes of the specific commit into staging area.
 
+25].git log, shortlog, show, blame
+- 'git log' displays the commit history of the current branch (shows all commits and their descendants of the current branch).
+- 'git log HEAD~n' or 'git log "HEAD@{n}"' or 'git log <hash>' displays the commit history starting from a specific commit (including its direct and indirect descendants).
+- The output of 'git log' is shown in this format:
+    - Commit hash
+    - Merge: first parent, second parent (only shown if the commit is a merge commit)
+    - Author: username and email of the commit author (the person who made the commit)
+    - Date: day, date, and time of the commit
+    - Commit message
+- When the HEAD commit appears in git log, it may show additional labels beside it:
+    (HEAD -> branch) → if HEAD is attached and is the tip of the given branch
+    (HEAD, branch1, branch2) → if HEAD is detached but it is also the tip of branch1 and branch2
+    (HEAD) → if HEAD is in a detached state
+- Formatting options of 'git log'
+    '--oneline' = displays the log where each line of the commit shows the whole commit, in the structure "<commit hash> (HEAD / HEAD, branch / HEAD->branch if the commit is HEAD commit) <commit message title>" [The commit message title is the first line of the commit message.]
+    '--stat' = displays each commit along with a summary of changes for every modified file.For each file, it shows the number of insertions (+) and deletions (-).like:  index.html | 11 +++++++++--
+    '-p' or '--patch' = displays each commit with the actual changes made in every file.--stat only shows how many lines were changed (summary).-p shows which specific lines were changed and what the exact changes are (additions and deletions).
+    '--merges' = similar to normal 'git log' but it only displays the merge commits.
+    '--no-merges' = similar to 'git log' but it only displays non merge commits.
+    '--graph' = it is show the commit history as graph. it is generally used with --oneline.
+            *   c8e3f57 (HEAD -> main) Merge branch 'feature'
+            |\
+            | *  b2f1c93 (feature) Add feature logic
+            | *  a1e2d45 Refactor feature code
+            * |  3e1c2a1 Update README
+            |/
+            *  9dcbba2 Initial commit
+            c8e3f57 is a merge commit — it merged the feature branch into main.
+            The commits b2f1c93 and a1e2d45 were part of the feature branch and 3e1c2a1 is part of the main branch.
+            From 9dcbba2 both branches splitted.
+    '--author="rspa-odoo"' = similat to normal 'git log' but it only displays the commit which is authorized by particular user.
+    '--since="2025-03-04"' = similar to normal 'git log' but it only displays the commit which are made after 4th march 2025.
+    'git log <branch>' = display commit history of the particular branch starting from tip of that branch.
+=
+- 'git shortlog' = similar to 'git log' but it displays commits grouped by author. For each author, it shows the total number of commits they made and the title (first line) of each commit.
+    Alice[username] (3):
+          Add login feature [commit message]
+          Fix typo in login page
+          Update documentation
+
+    Bob (2):
+          Improve checkout flow
+          Add payment gateway support
+- 'git shortlog -n' = similar to 'git shortlog' sorts the log by the number of commits, showing authors with the highest commit count at top.[by default shortlog is sorts the log according to alphabetical order of Author's username]
+=
+- 'git show' = display the HEAD commit with it's changes[in which file what insertions and deletions are performed].
+- 'git show HEAD~n' or 'git show "HEAD@{n}" or 'git show <hash>' = run the 'git show' for specific commit.['git show' is similar to 'git log --patch' but it displays all commit with changes where the 'git show' is display the changes for specific commit]
+=
+- 'git blame' is working with specific file.
+- 'git blame index.html' is lists each line of index.html one by one, with this structure:
+    "<hash of the latest commit affecting this line> (<author’s username of the commit> <timestamp of the commit> <line number>) <content of the line>"
+- 'git blame -L 2,5 index.html' = displays blame information only for lines 2 to 5.
+- 'git blame -e index.html' = similar to normal 'git blame', but it shows the author’s email instead of the author’s username.
+
 ==============================================================================================================================================================================================================================
