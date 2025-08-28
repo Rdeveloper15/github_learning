@@ -686,4 +686,30 @@ Note: In GitHub, when you try to apply a commit (via merge or rebase) on top of 
 - 'git blame -L 2,5 index.html' = displays blame information only for lines 2 to 5.
 - 'git blame -e index.html' = similar to normal 'git blame', but it shows the author’s email instead of the author’s username.
 
+26].git cherry-pick
+= The 'git cherry-pick' command is used to apply specific existing commits of other branch onto the top of current branch.
+= If other branches have multiple commits which are not existed into your current branch, and you need to add specific commit from that commits into your current branch then rebasing or merging is not working but cherry-pick is used instead because cherry-pick is add one specific commit.
+= for e.g. we have 2 branch
+    a - b - c - d   Main
+         \
+           e - f - g Feature
+    'git checkout main'.
+    'git cherry-pick <commit f's hash>'
+    now,
+        a - b - c - d - f   Main
+         \
+           e - f - g Feature
+= Actually cherry-pick is not add existing commit f into Main branch but it create brand new commit on top of Main branch which have changes similar to commit f.current git user is assigned as author for new commit f [note that existing commit f's author is not changed].
+= Options for 'git cherry-pick'
+    --edit: open nano editor for write commit message for cherrypicked commit.[without this option cherrypick command take existing commit's[Feature's f commit] message as new commit's[Main's f commit] message]
+    --no-commit: this option is not make commit but it apply changes of existing commit on top of current branch in staging area.
+    --signoff: this option is add signature line in new commit message during cherrypick.[signature line like: "Signed-off-by: rspa-odoo <rspa@odoo.com>"]
+= You can cherry-pick multiple commits on current branch by 'git cherry-pick <hash1> <hash2> <hash3>' command.[here if all commit's are totally disconnected with each other then also this command is working fine][this command is apply commit on current branch in same order in which their hash is mentioned]
+= During cherry-pick of one commit on current branch there are possiblity to occuer merge conflicts[e.g.: The commit being cherry-picked is try to removes a line that no longer exists in the current branch. or The commit being cherry-picked is try to modifies a line, but that line has already been changed differently in the current branch.]
+    In these cases, Git pauses the cherry-pick process and displays the merge conflicts and give 3 options to resolve these conflicts.
+    'git cherry-pick --abort' = abort the whole cherry-pick process.
+    'git cherry-pick --continue' = make changes than staged them by 'git add .' now continue to making new commit with modified code by this command.[open the nano editor for write commit message]
+    'git cherry-pick --skip' = skip the current commit and go to next commit.[usefull when you cherrypick multiple commit at a time]
+= Note that if you use '--no-commit' option with cherry-pick and if merge confclits are occuer then these conflicts are just displayed in working directory and in this secenario conflict resolving command(--abort, --skip and --continue) are useless.
+
 ==============================================================================================================================================================================================================================
