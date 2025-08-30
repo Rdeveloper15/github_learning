@@ -396,8 +396,8 @@ The 'git diff' command compares two version of code line by line. When you run '
 = Now you can add remote to this git repo and push on github as well. You can also apply all github commands on this repo.
 = 'git init -b <branch_name>' is convert local repo into git repo and when first commit is make then '<branch_name>' branch is created not 'main' and this commit are placed in this branch.
 = 'git config --global init.defaultBranch <branch-name>' this command is sets the default branch name globally for all new repositories that you initialize using git init. after that whenever you run git init command then than that repo is created with default branch <branch-name> instead of main.
-- 'git config --global --unset init.defaultBranch'  unset default branch and make it main
-- 'git config --global init.defaultBranch'  show default branch for init.If you set default branch for init then it show otherwise not.
+= 'git config --global --unset init.defaultBranch'  unset default branch and make it main
+= 'git config --global init.defaultBranch'  show default branch for init.If you set default branch for init then it show otherwise not.
 
 16].2 types of merge
 = Whenever merge is occuer between 2 branches in github (by pull command('git pull <remote> <branch>') or by merge command('git merge <branch>')) Then there is 2 types of merge can be occuer.
@@ -711,5 +711,99 @@ Note: In GitHub, when you try to apply a commit (via merge or rebase) on top of 
     'git cherry-pick --continue' = make changes than staged them by 'git add .' now continue to making new commit with modified code by this command.[open the nano editor for write commit message]
     'git cherry-pick --skip' = skip the current commit and go to next commit.[usefull when you cherrypick multiple commit at a time]
 = Note that if you use '--no-commit' option with cherry-pick and if merge confclits are occuer then these conflicts are just displayed in working directory and in this secenario conflict resolving command(--abort, --skip and --continue) are useless.
+
+27].git config
+- The 'git config' command is used to define and manage Git configuration settings.Using 'git config' command you can configure many settings of the particular git repo.These configured settings are used to manage and maintain your repo's code easily.
+- There are total 3 configuration levels on which 'git config' command apply the configuration settings.
+    --local,
+        If no level is specified, Git applies the configuration at the local level by default.
+        Local configurations apply only to the specific repository where the command is executed.
+        These settings are stored in the repository’s .git/config file.
+        The configuration command must be executed inside the repository for local configuration.
+    --global,
+        The global level is used to configure Git settings for the current user of system across all repositories.[these configurations are applied on all repositories which are controlled by this user(machine's user not git user).]
+        This is useful when multiple users exist on the same machine and you want to define settings, specific to your current user.
+        Global configurations are stored in: Linux / macOS: "~/.gitconfig" and for Windows: "C:\Users\<YourUsername>\.gitconfig"
+    --system,
+        The system level is used to configure Git settings for all repositories of your machine irrespect to the user.
+        System configuration are stored in: Linux / macOS: "/etc/gitconfig" and for Windows: "C:\ProgramData\Git\config"
+    When resolving configuration values, Git follows this priority order (highest to lowest):Local, Global, System. It means same configuration setting is defined in all levels then Local's setting is applied.[If local's setting is not defined then global's setting is applied].
+- Configurations commands.[Here in each command '--global' is used but you can use '--local' or '--system' instead of it]
+    1.user's commands
+        'git config --global user.name "username of github user"'  =  connect username of the particular github account with your system.
+        'git config --global user.email "email of github user"'  =  connect useremail of the particular github account with your system.
+        'git config --global --unset user.name'  =  unset username from your system.
+        'git config --global --unset user.email'  =  unset useremail from your system.
+        When you make commit from your system then this commit is created with this user as author.
+    2.default editor's commands
+        'git config --global core.editor "code --wait"'  =  set vs code as default editor for user input
+        'git config --global core.editor "nano"'  =  set nano editor as default editor for user input
+        During middle of some github process sometimes git needs to take input from user[like: for take commit message for merge commit during three-way merge] so we need to one default editor which is take input from user during middle process.
+    3.pull's command
+        'git config --global pull.rebase true'  =  make pull process, pull with rebase by default, like after enbale pull.rebase in configuration 'git pull origin main' = 'git pull --rebase origin main'
+        'git config --global pull.rebase false'  =  make pull process as itis like normal pull.
+    4.defaultBranch's command
+        'git config --global init.defaultBranch <branch-name>'  =  sets the default branch name globally for all new repositories that you initialize using git init. after this configuration whenever you run 'git init' command then that repo is created with default branch <branch-name> instead of main.
+        'git config --global --unset init.defaultBranch'   =  unset default branch and make it main
+        'git config --global init.defaultBranch'  =  display default branch for init.If you set default branch for init then it display otherwise not.
+    5.color's commands
+        - Git allows you to configure colors for various commands and their output to improve readability.
+        - The general format is: color.<property>.<slot> <color-value>
+            properly  →  The Git command whose output will be colorized[like branch, diff, status etc...]
+            slot  →  Each property has multiple types of output[like for branch, local branch, remote tracking branch etc..., for diff added diff, removed diff etc..., for status modified files, staged files, untracked files etc...]
+            color-value  →  [normal / black / red / green / yellow / blue / magenta / cyan / white][each propety's each slot have one it's default color like, for branch property remote slot have red at its default color, so "normal" color value indicate that property's slot's default color.][color value is also can be specified in hexadecimal code like #ff0000]
+            1.properly: branch [Controls the coloring of output for the 'git branch' command.]
+                Available slots for branch property.
+                    1.current: the currently checked-out local branch.
+                    2.local: other local branches.
+                    3.remote: remote tracking branches ("origin/feature-x")
+                    4.upstream: remote tracking branch which is upstream of the current local branch.
+                    5.plain: any other branches not covered above.
+                'git config --global color.branch.current blue' This configuration makes the current branch display in blue when you run 'git branch'.
+                'git config --global color.branch false' make all output related to 'git branch' command colorless[white].
+                'git config --global color.branch true' make all output related to 'git branch' command colorfull[according to configuration you set using color.branch.<slot> command].[by default color.branch is already true]
+            2.properly: diff [Controls the coloring of output for the 'git diff' command.]
+                Available slots for diff property.
+                    1.old: removed lines of the diff.
+                    2.new: added lines of the diff.
+                    3.whitespace: sets a color for any whitespace errors in a diff.
+                'git config --global color.diff.old blue' This configuration makes the removed lines display in blue when you run 'git diff'.
+                'git config --global color.diff false' make all output related to 'git diff' command colorless[white].
+                'git config --global color.diff true' make all output related to 'git diff' command colorfull[according to configuration you set using color.diff.<slot> command].[by default color.diff is already true]
+            3.properly: status [Controls the coloring of output for the 'git status' command.]
+                Available slots for status property.
+                    1.header: header description[like: on branch main etc...] shown in status.
+                    2.branch: branch name in header[on branch "branch_name"].
+                    3.added: list of staged files shown in status.
+                    4.changed: list of modified files shown in status.
+                    5.untracked: list of untracked files shown in status.
+                'git config --global color.status.added blue' This configuration makes the list of staged files display in blue when you run 'git status'.
+                'git config --global color.status false' make all output related to 'git status' command colorless[white].
+                'git config --global color.status true' make all output related to 'git status' command colorfull[according to configuration you set using color.status.<slot> command].[by default color.status is already true]
+        - In github some commands redirect terminal output in file and that redirected output is also visible in colors[like merge conflicts redirected into file, incoming changes in red and existing changes in green].
+            'git config --global color.ui false' make terminal output and redirected file output colorlesss[white].
+            'git config --global color.ui auto' default value, make terminal output colorfull[according to configuration you set using color.<property>.<slot> command.] but redirected file output colorless.
+            'git config --global color.ui always' make terminal output and redirected file output colorfull.
+    6.aliase command
+        Git allows you to create aliases (shortcuts) for any git commands.
+        General structure of any Git commands: 'git <command>'
+        Strucuture of create alias for any git command: 'git config --global alias.<alias_name> <git command>'
+        e.g.: alias for "commit" command: 'git config --global alias.cmt commit' now you can use 'git cmt --amend' instead of 'git commit --amend'
+        e.g.2: alias for "commit --amend" command: 'git config --global alias.cmtamd "commit --amend"'[multi word command written in ""] now you can use 'git cmtamd' instead of 'git commit --amend'
+    7.'git config --list' displays all configuration of your current repo.[in this format  user.name=rspa-odoo color.branch.current=green]
+- Git stores configuration data in a key-value format. Keys can have sub-keys, forming a hierarchy. For example:
+    {
+        "user": {
+            "name": "",
+            "email": ""
+        }
+        "color": {
+            "ui": "",
+            "status": {},
+            "branch": {},
+            ...
+        }
+    }
+
 
 ==============================================================================================================================================================================================================================
