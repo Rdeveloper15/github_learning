@@ -1,27 +1,7 @@
-
-ppt:-  https://docs.google.com/presentation/d/1_IqN_a27BFr2ItUmPvYJacN-KVcQi_GUK5YeLmDZJNU/edit#slide=id.g24167233346_0_18
+SSH vs HTTP
+github certification exam: https://docs.github.com/en/get-started/showcase-your-expertise-with-github-certifications/registering-for-a-github-certifications-exam#about-identification-requirements
 
 after complete github
 clean your main github repo and push all important local code on github.
 
-= remining topics
-
-standard rebase = normal rebase
-git rebase -i <branch> or git rebase --interactive <branch>     is rebase interactively,
-git rebase --d 
-git rebase --p 
-git rebase --x 
-git rebase --onto <newbase> <oldbase>,,  git rebase --onto main featureA featureB
-
-git patch   =
-SSH vs HTTP
-remove and restore
-
-if you went to change root(first) commit git rebase -i --root
-
-git merge --abort
-
-github certification exam: https://docs.github.com/en/get-started/showcase-your-expertise-with-github-certifications/registering-for-a-github-certifications-exam#about-identification-requirements
-
 ==============================================================================================================================================================================================================================
-

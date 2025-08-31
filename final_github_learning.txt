@@ -174,6 +174,7 @@ concept of remote tarcking branch: we have differant differant remote for one lo
 - here merge process of origin/main with current local main is similar to discussed in section 9.1.1
 - [git fetch origin main + git merge origin/main = git pull origin main]
 - note that without fetch if you merge oringin/main with local main then unupdated oringin/main will merge with local main.(don't recomanded)
+- during the merge process if merge conflicts are occuer then merge process is becomes stop.now you have two option either make changes staged them and create commit[merge commit] or abort the whole merge process by 'git merge --abort' command.[This command is also works in merge conflicts during pull process].
 
 9.1.5].rebaseing fetched data(let's rebase fetchd data by 'git rebase oringin/main' command, assume that there is only one branch main and only one remote oringin)
 - after fetching data from remote by 'git fetch origin main' command now you can rebase your current local branch(main) with this fetched data(updated remote tracking branch oringin/main) by 'git rebase origin/main' command.
@@ -458,7 +459,8 @@ Insert new commit between the history of an existing branch:
         - '(HEAD) printed beside of HEAD commit's hash.If HEAD is in detached state and not pointing to the any specific branch's tip
 
 19].Interactive Rebase:
-    For rebase latest 4 commit of current branch run 'git rebase -i HEAD^^^^' or 'git rebase -i HEAD~4'
+    There is two type of rebase standard(normal rebase we study till now) rebase and interactive(which we study in this section) rebase.
+    For rebase latest 4 commit of current branch run 'git rebase -i HEAD^^^^' or 'git rebase -i HEAD~4' or 'git rebase --interactive HEAD^^^^' or 'git rebase --interactive HEAD~4'
     - this command will open editor which is display latest 4 commit, in which each line is displayed in '<operation> <commit hash> <commit message>' format.
     - now set one of these operation for each commit (pick/P, reword/r, edit/e, drop/d etc...) in operation and close the editor.
     - now rebase is starting from 4th commit of top.
@@ -467,6 +469,8 @@ Insert new commit between the history of an existing branch:
         - 2.b1: A<-B and temp_branch=A<-B<-D<-E<-F now rebase b1(A<-B) with temp_branch till D(A<-B<-D) here for reword the D(means change the commit message) so it open the editor for change commit meesage.after changing the commit message and close the editor updated D is add in b1.
         - 3.b1: A<-B<-D' and temp_branch=A<-B<-E<-F now b1(A<-B<-D') with temp_branch till E(A<-B<-E) here for edit E(amend in E) rebase process is being stop, so now make change in code and amend it in E and you can create new commit as well(X') now continue the rebase by 'git rebase --continue' now updated E and X' is appply on b1.
         - 4.b1: A<-B<-D'<-E'<-X' and temp_branch=A<-B<-F now b1(A<-B<-E'<-X') with temp_branch till F(A<-B<-F) here F is pick as itis an apply in b1.(final b1: A<-B<-D'<-E'<-X'<-F). But here note that during apply on F maybe merge conflicts are occuer because here (A<-B<-E'<-X' is rebased by A<-B<-F and both are diverged)So we in that senario (you can skip the F, make changes in merge conflicts and continue the rebase or abort the rebase process by standard rebase commands).
+    - 'git rebase -i --root' is start interactive rebase process from 'root commit' of the current branch[root commit is first commit of the current branch.]
+    - 'git rebase -i <branch_name>' is similar to 'git rebase <branch_name>' but before start applying the current branch's extra commit on top of the <branch_name> it open nano editor for interactive for extra commits of current branch[which are apply on top of the <branch_name>].[if current branch not have extra commit then it open 'noop' string in nano editor for interaction]
 
 20].git reflog.
 = Reflog stands for Reference Log.
