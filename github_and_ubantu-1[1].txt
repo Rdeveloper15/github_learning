@@ -1,7 +1,0 @@
-SSH vs HTTP
-github certification exam: https://docs.github.com/en/get-started/showcase-your-expertise-with-github-certifications/registering-for-a-github-certifications-exam#about-identification-requirements
-
-after complete github
-clean your main github repo and push all important local code on github.
-
-==============================================================================================================================================================================================================================
